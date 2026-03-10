@@ -21,12 +21,12 @@ function Navbar() {
     }`;
 
   return (
-    <header className="sticky top-0 z-50 bg-transparent px-4 pt-3 md:px-6">
+    <header className="sticky top-0 z-50 bg-transparent px-2 pt-2 sm:px-4 sm:pt-3 md:px-6">
       <Motion.nav
         initial={{ opacity: 0, y: -18 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: "easeOut" }}
-        className="relative isolate mx-auto flex max-w-7xl items-center justify-between overflow-hidden rounded-full border border-white/45 bg-white/25 px-3 py-2 shadow-[0_16px_42px_rgba(12,30,22,0.22),inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-xl backdrop-saturate-150 md:px-6"
+        className="relative isolate mx-auto flex max-w-7xl items-center justify-between overflow-hidden rounded-2xl border border-white/45 bg-white/25 px-2.5 py-1.5 shadow-[0_16px_42px_rgba(12,30,22,0.22),inset_0_1px_0_rgba(255,255,255,0.55)] backdrop-blur-xl backdrop-saturate-150 sm:rounded-full sm:px-3 sm:py-2 md:px-6"
         aria-label="Main navigation"
       >
         <span
@@ -47,7 +47,7 @@ function Navbar() {
           <img
             src={logo}
             alt="FurneX logo"
-            className="h-9 w-auto object-contain md:h-10"
+            className="h-8 w-auto object-contain sm:h-9 md:h-10"
           />
         </Link>
 
@@ -146,7 +146,7 @@ function Navbar() {
         <button
           type="button"
           onClick={() => setIsMenuOpen((prev) => !prev)}
-          className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1F5A2E] md:hidden"
+          className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#1F5A2E] sm:h-10 sm:w-10 md:hidden"
           aria-label="Toggle menu"
           aria-expanded={isMenuOpen}
         >
@@ -161,13 +161,13 @@ function Navbar() {
           initial={{ opacity: 0, y: -8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25 }}
-          className="mx-auto mt-3 max-w-7xl rounded-3xl border border-gray-200 bg-white p-4 shadow-[0_10px_30px_rgba(0,0,0,0.08)] md:hidden"
+          className="mx-1 mt-2 rounded-2xl border border-gray-200 bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.08)] sm:mx-auto sm:mt-3 sm:max-w-7xl sm:rounded-3xl sm:p-4 md:hidden"
         >
           <div className="flex flex-col gap-2">
             <NavLink
               to="/#home"
               onClick={() => setIsMenuOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
+              className="rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
             >
               Home
             </NavLink>
@@ -175,7 +175,7 @@ function Navbar() {
             <NavLink
               to="/features"
               onClick={() => setIsMenuOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
+              className="rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
             >
               Features
             </NavLink>
@@ -183,7 +183,7 @@ function Navbar() {
             <NavLink
               to="/gallery"
               onClick={() => setIsMenuOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
+              className="rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
             >
               Gallery
             </NavLink>
@@ -191,7 +191,7 @@ function Navbar() {
             <NavLink
               to="/contact"
               onClick={() => setIsMenuOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
+              className="rounded-xl px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
             >
               Contact
             </NavLink>
@@ -201,7 +201,7 @@ function Navbar() {
                 <Link
                   to="/signup"
                   onClick={() => setIsMenuOpen(false)}
-                  className="block rounded-full bg-[#1F5A2E] px-5 py-3 text-center text-sm font-semibold text-white transition hover:bg-[#174724]"
+                  className="block rounded-full bg-[#1F5A2E] px-5 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-[#174724]"
                 >
                   Sign Up
                 </Link>
@@ -210,14 +210,14 @@ function Navbar() {
                   <Link
                     to="/dashboard"
                     onClick={() => setIsMenuOpen(false)}
-                    className="rounded-full border border-[#1F5A2E] px-5 py-3 text-center text-sm font-semibold text-[#1F5A2E]"
+                    className="rounded-full border border-[#1F5A2E] px-5 py-2.5 text-center text-sm font-semibold text-[#1F5A2E]"
                   >
                     Dashboard
                   </Link>
                   <button
                     type="button"
                     onClick={handleLogout}
-                    className="rounded-full bg-[#1F5A2E] px-5 py-3 text-sm font-semibold text-white"
+                    className="rounded-full bg-[#1F5A2E] px-5 py-2.5 text-sm font-semibold text-white"
                   >
                     Logout
                   </button>

@@ -112,23 +112,23 @@ export default function Signup() {
       transition={{ duration: 0.35 }}
     >
       {/* Left Side */}
-      <div className="w-full lg:w-[45%] bg-[#efefef] flex items-start sm:items-center justify-center px-4 sm:px-6 lg:px-12 py-5 sm:py-4 overflow-y-auto lg:overflow-hidden">
+      <div className="w-full lg:w-[45%] bg-[#efefef] flex items-start sm:items-center justify-center px-4 sm:px-6 lg:px-12 py-4 sm:py-4 overflow-y-auto lg:overflow-hidden">
         <MotionDiv
-          className="w-full max-w-[420px] sm:max-w-[440px] py-1 sm:py-2"
+          className="w-full max-w-[420px] sm:max-w-[440px] py-0.5 sm:py-2"
           variants={containerVariants}
           initial="hidden"
           animate="show"
         >
           <MotionH1
             variants={itemVariants}
-            className="text-[28px] sm:text-[34px] lg:text-[40px] font-semibold text-black leading-none text-center mb-3 sm:mb-4 font-serif"
+            className="text-[26px] sm:text-[34px] lg:text-[40px] font-semibold text-black leading-none text-center mb-2.5 sm:mb-4 font-serif"
           >
             FurneX
           </MotionH1>
 
           <MotionH2
             variants={itemVariants}
-            className="text-[15px] sm:text-[18px] lg:text-[22px] text-black text-center mb-4 sm:mb-5 font-medium"
+            className="text-[14px] sm:text-[18px] lg:text-[22px] text-black text-center mb-3.5 sm:mb-5 font-medium leading-tight"
           >
             Create Your FurneX Account
           </MotionH2>
@@ -136,7 +136,7 @@ export default function Signup() {
           <MotionForm
             variants={containerVariants}
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-3 sm:space-y-4"
+            className="space-y-2.5 sm:space-y-4"
           >
             {/* Name */}
             <MotionDiv variants={itemVariants}>
@@ -242,7 +242,7 @@ export default function Signup() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="mx-auto flex h-[40px] sm:h-[46px] w-full max-w-[150px] sm:max-w-[180px] items-center justify-center rounded-full bg-[#1f5b2c] text-white text-[13px] sm:text-[16px] font-bold tracking-wide transition hover:opacity-95 disabled:opacity-70"
+                className="mx-auto flex h-[40px] sm:h-[46px] w-full max-w-full min-[420px]:max-w-[200px] items-center justify-center rounded-full bg-[#1f5b2c] text-white text-[13px] sm:text-[16px] font-bold tracking-wide transition hover:opacity-95 disabled:opacity-70"
               >
                 {loading ? "Signing up..." : "SIGN UP"}
               </MotionButton>
@@ -266,7 +266,7 @@ export default function Signup() {
             </MotionDiv>
 
             {/* Login Link */}
-            <MotionP variants={itemVariants} className="text-center text-[12px] sm:text-[15px] text-black pt-1">
+            <MotionP variants={itemVariants} className="text-center text-[12px] sm:text-[15px] text-black pt-1 leading-relaxed">
               Already have an account?{" "}
               <Link
                 to="/login"
