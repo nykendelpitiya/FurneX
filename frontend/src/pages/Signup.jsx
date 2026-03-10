@@ -1,5 +1,5 @@
 import { useContext, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -33,9 +33,12 @@ const MotionP = motion.p;
 
 export default function Signup() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useContext(AuthContext);
 
   const rememberedEmail = localStorage.getItem("rememberedEmail") || "";
+  const prefilledEmail = location.state?.email || "";
+  const initialEmail = prefilledEmail || rememberedEmail;
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -51,17 +54,19 @@ export default function Signup() {
     resolver: zodResolver(signupSchema),
     defaultValues: {
       name: "",
-      email: rememberedEmail,
+      email: initialEmail,
       password: "",
       confirmPassword: "",
     },
   });
 
   useEffect(() => {
-    if (rememberedEmail) {
+    if (prefilledEmail) {
+      setValue("email", prefilledEmail);
+    } else if (rememberedEmail) {
       setValue("email", rememberedEmail);
     }
-  }, [rememberedEmail, setValue]);
+  }, [prefilledEmail, rememberedEmail, setValue]);
 
   const onSubmit = async (data) => {
     try {
