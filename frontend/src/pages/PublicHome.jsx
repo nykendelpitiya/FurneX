@@ -53,7 +53,7 @@ function PublicHome() {
       {/* HERO SECTION */}
       <section
         id="home"
-        className="max-w-7xl mx-auto px-6 py-16 grid md:grid-cols-2 gap-12 items-center"
+        className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 md:py-16 grid md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 items-center"
       >
         {/* LEFT CONTENT */}
         <Motion.div
@@ -61,11 +61,11 @@ function PublicHome() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h1 className="text-5xl md:text-6xl font-bold text-black leading-tight mb-6">
+          <h1 className="text-3xl sm:text-4xl md:text-6xl font-bold text-black leading-tight mb-4 sm:mb-6">
             Smart Furniture Room Designer
           </h1>
 
-          <p className="text-gray-600 text-lg leading-relaxed mb-8 max-w-xl">
+          <p className="text-gray-600 text-sm sm:text-base md:text-lg leading-relaxed mb-6 sm:mb-8 max-w-xl">
             Design your room easily with our interactive furniture planner.
             Arrange chairs, tables, and other furniture based on your room
             size and layout preferences. Visualise your designs in both 2D
@@ -77,22 +77,22 @@ function PublicHome() {
           {/* BUTTON */}
           <Link
             to="/signup"
-            className="inline-flex bg-[#1F5A2E] text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-[#174724] transition"
+            className="inline-flex w-full sm:w-auto justify-center bg-[#1F5A2E] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold hover:bg-[#174724] transition"
           >
             Start Project
           </Link>
 
           {/* STATS */}
-          <div className="flex gap-16 mt-12 flex-wrap">
+          <div className="grid grid-cols-2 sm:flex gap-6 sm:gap-12 md:gap-16 mt-8 sm:mt-12">
             <div>
-              <h2 className="text-4xl font-semibold text-[#2E2E2E]">300+</h2>
-              <p className="text-gray-500 italic text-xl">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#2E2E2E]">300+</h2>
+              <p className="text-gray-500 italic text-sm sm:text-base md:text-xl">
                 Happy Customers
               </p>
             </div>
             <div>
-              <h2 className="text-4xl font-semibold text-[#2E2E2E]">100+</h2>
-              <p className="text-gray-500 italic text-xl">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#2E2E2E]">100+</h2>
+              <p className="text-gray-500 italic text-sm sm:text-base md:text-xl">
                 Furniture Styles
               </p>
             </div>
@@ -113,7 +113,7 @@ function PublicHome() {
               loop
               muted
               playsInline
-              className="w-full h-[420px] object-cover"
+              className="w-full h-[240px] sm:h-[320px] md:h-[420px] object-cover"
             />
           </div>
         </Motion.div>

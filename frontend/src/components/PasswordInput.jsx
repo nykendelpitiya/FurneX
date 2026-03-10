@@ -12,27 +12,28 @@ function PasswordInput({
 
   return (
     <div>
-      <label className="block text-sm font-medium mb-1">{label}</label>
+      <label className="mb-1 block text-sm font-medium sm:text-[0.95rem]">{label}</label>
 
       <div className="relative">
         <input
           type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           {...register(name)}
-          className="w-full border rounded-lg p-3 pr-11 focus:outline-none focus:ring-2 focus:ring-black"
+          className="w-full rounded-lg border px-3 py-2.5 pr-12 text-sm sm:py-3 sm:text-base focus:outline-none focus:ring-2 focus:ring-black"
         />
 
         <button
           type="button"
           onClick={() => setShowPassword((prev) => !prev)}
-          className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500"
+          className="absolute right-2 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-black/40 sm:right-3"
+          aria-label={showPassword ? "Hide password" : "Show password"}
         >
-          {showPassword ? <FiEyeOff size={20} /> : <FiEye size={20} />}
+          {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
         </button>
       </div>
 
       {error && (
-        <p className="text-red-500 text-sm mt-1">{error.message}</p>
+        <p className="mt-1 text-xs text-red-500 sm:text-sm">{error.message}</p>
       )}
     </div>
   );

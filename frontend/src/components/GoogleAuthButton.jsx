@@ -26,17 +26,20 @@ function GoogleAuthButton({ onSuccessLogin, onErrorMessage }) {
   };
 
   return (
-    <div className="w-full flex justify-center">
-      <GoogleLogin
-        onSuccess={handleSuccess}
-        onError={handleError}
-        locale="en"
-        text="continue_with"
-        theme="outline"
-        shape="pill"
-        size="large"
-        logo_alignment="left"
-      />
+    <div className="w-full flex justify-center px-1 sm:px-0">
+      <div className="w-full max-w-[360px] sm:max-w-[420px]">
+        <GoogleLogin
+          onSuccess={handleSuccess}
+          onError={handleError}
+          locale="en"
+          text="continue_with"
+          theme="outline"
+          shape="pill"
+          size="large"
+          logo_alignment="left"
+          width="100%"
+        />
+      </div>
     </div>
   );
 }

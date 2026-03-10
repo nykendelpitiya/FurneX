@@ -105,7 +105,7 @@ export default function Login() {
       transition={{ duration: 0.35 }}
     >
       {/* Left Side */}
-      <div className="w-full lg:w-[45%] bg-[#efefef] flex items-start sm:items-center justify-center px-5 sm:px-8 lg:px-12 py-6 sm:py-8 overflow-y-auto lg:overflow-hidden">
+      <div className="w-full lg:w-[45%] bg-[#efefef] flex items-start sm:items-center justify-center px-4 sm:px-8 lg:px-12 py-5 sm:py-8 overflow-y-auto lg:overflow-hidden">
         <MotionDiv
           className="w-full max-w-[460px] py-1 sm:py-2"
           variants={containerVariants}
@@ -114,14 +114,14 @@ export default function Login() {
         >
           <MotionH1
             variants={itemVariants}
-            className="text-[34px] sm:text-[42px] lg:text-[48px] font-semibold text-black leading-none text-center mb-5 sm:mb-6 font-serif"
+            className="text-[30px] sm:text-[42px] lg:text-[48px] font-semibold text-black leading-none text-center mb-4 sm:mb-6 font-serif"
           >
             FurneX
           </MotionH1>
 
           <MotionH2
             variants={itemVariants}
-            className="text-[22px] sm:text-[28px] lg:text-[32px] text-black text-center mb-7 sm:mb-8 font-medium"
+            className="text-[20px] sm:text-[28px] lg:text-[32px] text-black text-center mb-6 sm:mb-8 font-medium leading-tight"
           >
             Welcome Back to FurneX Login
           </MotionH2>
@@ -129,7 +129,7 @@ export default function Login() {
           <MotionForm
             variants={containerVariants}
             onSubmit={handleSubmit(onSubmit)}
-            className="space-y-5 sm:space-y-6"
+            className="space-y-4 sm:space-y-6"
           >
             {/* Email */}
             <MotionDiv variants={itemVariants}>
@@ -178,7 +178,7 @@ export default function Login() {
             {/* Remember + Forgot */}
             <MotionDiv
               variants={itemVariants}
-              className="flex items-center justify-between gap-3 flex-wrap"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-3"
             >
               <label className="flex items-center gap-2 text-[13px] sm:text-[15px] font-medium text-black cursor-pointer">
                 <span>Remember me</span>
@@ -192,7 +192,7 @@ export default function Login() {
 
               <button
                 type="button"
-                className="text-[13px] sm:text-[15px] font-medium text-[#355f2e] underline underline-offset-4 hover:text-[#1f5b2c]"
+                className="self-start sm:self-auto text-[13px] sm:text-[15px] font-medium text-[#355f2e] underline underline-offset-4 hover:text-[#1f5b2c]"
               >
                 Forgot Password
               </button>
@@ -211,7 +211,7 @@ export default function Login() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="mx-auto flex h-[46px] sm:h-[52px] w-full max-w-[170px] sm:max-w-[200px] items-center justify-center rounded-full bg-[#1f5b2c] text-white text-[16px] sm:text-[18px] font-bold tracking-wide transition hover:opacity-95 disabled:opacity-70"
+                className="mx-auto flex h-[46px] sm:h-[52px] w-full max-w-full min-[420px]:max-w-[220px] items-center justify-center rounded-full bg-[#1f5b2c] text-white text-[16px] sm:text-[18px] font-bold tracking-wide transition hover:opacity-95 disabled:opacity-70"
               >
                 {loading ? "Logging in..." : "LOG IN"}
               </MotionButton>
@@ -233,7 +233,7 @@ export default function Login() {
             </MotionDiv>
 
             {/* Signup */}
-            <MotionP variants={itemVariants} className="text-center text-[14px] sm:text-[16px] text-black pt-1">
+            <MotionP variants={itemVariants} className="text-center text-[13px] sm:text-[16px] text-black pt-1 leading-relaxed">
               Don’t have an account?{" "}
               <Link
                 to="/signup"

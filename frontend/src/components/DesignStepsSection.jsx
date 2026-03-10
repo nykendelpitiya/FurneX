@@ -25,8 +25,8 @@ const steps = [
 
 function DesignStepsSection() {
   return (
-    <section className="max-w-7xl mx-auto px-6 pt-20 pb-24">
-      <div className="grid md:grid-cols-2 gap-16 items-center">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 pt-12 sm:pt-16 md:pt-20 pb-14 sm:pb-18 md:pb-24">
+      <div className="grid md:grid-cols-2 gap-10 sm:gap-12 md:gap-16 items-center">
 
         {/* LEFT SIDE */}
         <Motion.div
@@ -35,33 +35,33 @@ function DesignStepsSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-5xl font-bold leading-tight mb-12">
-            Designing Your Dream in <br /> Three Simple step
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold leading-tight mb-8 sm:mb-10 md:mb-12">
+            Designing Your Dream in <br className="hidden sm:block" /> Three Simple Steps
           </h2>
 
           <div className="relative">
 
             {/* vertical line */}
-            <div className="absolute left-6 top-8 bottom-8 w-[2px] bg-gray-300"></div>
+            <div className="absolute left-5 sm:left-6 top-6 sm:top-8 bottom-6 sm:bottom-8 w-[2px] bg-gray-300"></div>
 
             {steps.map((step, index) => {
               const Icon = step.icon;
 
               return (
-                <div key={index} className="flex gap-6 mb-12 relative">
+                <div key={index} className="flex gap-4 sm:gap-6 mb-8 sm:mb-10 md:mb-12 relative">
 
                   {/* ICON */}
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white z-10">
-                    <Icon size={24} />
+                  <div className="flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-black text-white z-10">
+                    <Icon size={20} className="sm:w-6 sm:h-6" />
                   </div>
 
                   {/* TEXT */}
                   <div>
-                    <h3 className="text-2xl font-semibold mb-2">
+                    <h3 className="text-xl sm:text-2xl font-semibold mb-2">
                       {step.title}
                     </h3>
 
-                    <p className="text-gray-600 text-lg leading-relaxed max-w-md">
+                    <p className="text-gray-600 text-base sm:text-lg leading-relaxed max-w-md pr-1">
                       {step.description}
                     </p>
                   </div>
@@ -79,11 +79,12 @@ function DesignStepsSection() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
+          className="order-first md:order-none"
         >
           <img
             src={designImage}
             alt="Design example"
-            className="rounded-3xl shadow-xl w-full max-w-[460px] object-cover"
+            className="rounded-2xl sm:rounded-3xl shadow-xl w-full max-w-full md:max-w-[460px] object-cover"
           />
         </Motion.div>
 
