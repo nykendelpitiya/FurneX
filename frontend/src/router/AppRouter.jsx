@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import PublicHome from "../pages/PublicHome";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Dashboard from "../pages/Dashboard";
@@ -10,7 +11,14 @@ import PublicRoute from "../components/PublicRoute";
 function AppRouter() {
   return (
     <BrowserRouter>
+
       <Routes>
+
+        <Route path="/" element={<PublicHome />} />
+        <Route path="/features" element={<PublicHome />} />
+        <Route path="/gallery" element={<PublicHome />} />
+        <Route path="/contact" element={<PublicHome />} />
+
         <Route
           path="/login"
           element={
@@ -37,7 +45,9 @@ function AppRouter() {
             </ProtectedRoute>
           }
         />
+
       </Routes>
+
     </BrowserRouter>
   );
 }
