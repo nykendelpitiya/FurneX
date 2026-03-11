@@ -260,7 +260,7 @@ export default function Signup() {
               <GoogleAuthButton
                 onSuccessLogin={handleGoogleSuccess}
                 onErrorMessage={setServerError}
-                buttonText="Continue with Google"
+                buttonText="Sign up with Google"
                 className="mx-auto flex h-[42px] sm:h-[46px] w-full max-w-[250px] items-center justify-center rounded-full border border-[#d7d7d7] bg-white text-[13px] sm:text-[15px] font-medium text-black shadow-sm transition hover:bg-[#f8f8f8]"
               />
             </MotionDiv>
