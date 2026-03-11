@@ -11,7 +11,7 @@ function AuthProvider({ children }) {
   useEffect(() => {
     const loadUser = async () => {
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token") || sessionStorage.getItem("token");
 
       if (!token) {
         dispatch({ type: "LOGOUT" });
@@ -33,6 +33,7 @@ function AuthProvider({ children }) {
       } catch {
 
         localStorage.removeItem("token");
+        sessionStorage.removeItem("token");
         dispatch({ type: "LOGOUT" });
 
       }
@@ -44,9 +45,15 @@ function AuthProvider({ children }) {
   }, []);
 
   // login action
-  const login = (user, token) => {
+  const login = (user, token, rememberUser = true) => {
 
-    localStorage.setItem("token", token);
+    if (rememberUser) {
+      localStorage.setItem("token", token);
+      sessionStorage.removeItem("token");
+    } else {
+      sessionStorage.setItem("token", token);
+      localStorage.removeItem("token");
+    }
 
     dispatch({
       type: "LOGIN_SUCCESS",
@@ -58,6 +65,7 @@ function AuthProvider({ children }) {
   // logout action
 const logout = () => {
   localStorage.removeItem("token");
+  sessionStorage.removeItem("token");
   localStorage.removeItem("rememberedEmail");
 
   dispatch({ type: "LOGOUT" });

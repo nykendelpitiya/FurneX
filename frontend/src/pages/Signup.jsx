@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
 import signupImage from "../assets/login_signup.png";
+import logo from "../assets/logo.png";
 import { signupSchema } from "../utils/validators";
 import { registerUser } from "../services/authService";
 import GoogleAuthButton from "../components/GoogleAuthButton";
@@ -24,7 +25,6 @@ const itemVariants = {
 };
 
 const MotionDiv = motion.div;
-const MotionH1 = motion.h1;
 const MotionH2 = motion.h2;
 const MotionForm = motion.form;
 const MotionInput = motion.input;
@@ -119,12 +119,15 @@ export default function Signup() {
           initial="hidden"
           animate="show"
         >
-          <MotionH1
-            variants={itemVariants}
-            className="text-[26px] sm:text-[34px] lg:text-[40px] font-semibold text-black leading-none text-center mb-2.5 sm:mb-4 font-serif"
-          >
-            FurneX
-          </MotionH1>
+          <MotionDiv variants={itemVariants} className="mb-2.5 text-center sm:mb-4">
+            <Link to="/#home" aria-label="FurneX home" className="inline-flex items-center justify-center">
+              <img
+                src={logo}
+                alt="FurneX logo"
+                className="h-12 w-auto object-contain sm:h-114 md:h-16"
+              />
+            </Link>
+          </MotionDiv>
 
           <MotionH2
             variants={itemVariants}
@@ -139,7 +142,7 @@ export default function Signup() {
             className="space-y-2.5 sm:space-y-4"
           >
             {/* Name */}
-            <MotionDiv variants={itemVariants}>
+            <MotionDiv variants={itemVariants} className="relative">
               <label className="block text-[13px] sm:text-[16px] font-semibold text-black mb-1.5 sm:mb-2">
                 Name
               </label>
@@ -148,15 +151,15 @@ export default function Signup() {
                 type="text"
                 placeholder="Enter Your Name"
                 {...register("name")}
-                className="w-full h-[44px] sm:h-[50px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
+                className="w-full h-[38px] sm:h-[42px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
               />
               {errors.name && (
-                <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>
+                <p className="absolute text-red-500 text-xs top-full mt-0.5">{errors.name.message}</p>
               )}
             </MotionDiv>
 
             {/* Email */}
-            <MotionDiv variants={itemVariants}>
+            <MotionDiv variants={itemVariants} className="relative">
               <label className="block text-[13px] sm:text-[16px] font-semibold text-black mb-1.5 sm:mb-2">
                 Email
               </label>
@@ -165,15 +168,15 @@ export default function Signup() {
                 type="email"
                 placeholder="Enter Your Email"
                 {...register("email")}
-                className="w-full h-[44px] sm:h-[50px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
+                className="w-full h-[38px] sm:h-[42px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
               />
               {errors.email && (
-                <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+                <p className="absolute text-red-500 text-xs top-full mt-0.5">{errors.email.message}</p>
               )}
             </MotionDiv>
 
             {/* Password */}
-            <MotionDiv variants={itemVariants}>
+            <MotionDiv variants={itemVariants} className="relative">
               <label className="block text-[13px] sm:text-[16px] font-semibold text-black mb-1.5 sm:mb-2">
                 Password
               </label>
@@ -183,7 +186,7 @@ export default function Signup() {
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter Your Password"
                   {...register("password")}
-                  className="w-full h-[44px] sm:h-[50px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 pr-12 sm:pr-14 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
+                  className="w-full h-[38px] sm:h-[42px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 pr-12 sm:pr-14 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
                 />
                 <MotionButton
                   whileTap={{ scale: 0.9 }}
@@ -195,12 +198,12 @@ export default function Signup() {
                 </MotionButton>
               </div>
               {errors.password && (
-                <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>
+                <p className="absolute text-red-500 text-xs top-full mt-0.5">{errors.password.message}</p>
               )}
             </MotionDiv>
 
             {/* Confirm Password */}
-            <MotionDiv variants={itemVariants}>
+            <MotionDiv variants={itemVariants} className="relative">
               <label className="block text-[13px] sm:text-[16px] font-semibold text-black mb-1.5 sm:mb-2">
                 Confirm Password
               </label>
@@ -210,7 +213,7 @@ export default function Signup() {
                   type={showConfirmPassword ? "text" : "password"}
                   placeholder="Confirm Your password"
                   {...register("confirmPassword")}
-                  className="w-full h-[44px] sm:h-[50px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 pr-12 sm:pr-14 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
+                  className="w-full h-[38px] sm:h-[42px] rounded-full border border-[#6f6f6f] bg-transparent px-4 sm:px-6 pr-12 sm:pr-14 text-[13px] sm:text-[15px] text-black placeholder:text-[#9a9a9a] outline-none focus:border-[#1f5b2c] focus:ring-1 focus:ring-[#1f5b2c]"
                 />
                 <MotionButton
                   whileTap={{ scale: 0.9 }}
@@ -223,7 +226,7 @@ export default function Signup() {
               </div>
 
               {errors.confirmPassword && (
-                <p className="text-red-600 text-xs sm:text-sm mt-1.5 font-medium">
+                <p className="absolute text-red-500 text-xs top-full mt-0.5">
                   {errors.confirmPassword.message}
                 </p>
               )}
@@ -251,7 +254,7 @@ export default function Signup() {
             {/* Divider */}
             <MotionDiv variants={itemVariants} className="flex items-center gap-2 sm:gap-3 pt-1">
               <div className="h-px flex-1 bg-[#cfcfcf]" />
-              <span className="text-[11px] sm:text-[12px] text-[#666]">or sign up with</span>
+              <span className="text-[111px] sm:text-[12px] text-[#666]">or sign up with</span>
               <div className="h-px flex-1 bg-[#cfcfcf]" />
             </MotionDiv>
 
@@ -261,7 +264,7 @@ export default function Signup() {
                 onSuccessLogin={handleGoogleSuccess}
                 onErrorMessage={setServerError}
                 buttonText="Sign up with Google"
-                className="mx-auto flex h-[42px] sm:h-[46px] w-full max-w-[250px] items-center justify-center rounded-full border border-[#d7d7d7] bg-white text-[13px] sm:text-[15px] font-medium text-black shadow-sm transition hover:bg-[#f8f8f8]"
+                className="mx-auto flex h-[442px] sm:h-[46px] w-full max-w-[250px] items-center justify-center rounded-full border border-[#d7d7d7] bg-white text-[13px] sm:text-[15px] font-medium text-black shadow-sm transition hover:bg-[#f8f8f8]"
               />
             </MotionDiv>
 
