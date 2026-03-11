@@ -1,9 +1,15 @@
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 
 import PublicHome from "../pages/PublicHome";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
 import Dashboard from "../pages/Dashboard";
+import Projects from "../pages/Projects";
+import Templates from "../pages/Templates";
+import DashboardLayout from "../components/dashboard/DashboardLayout";
+
 
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
@@ -18,6 +24,7 @@ function AppRouter() {
         <Route path="/features" element={<PublicHome />} />
         <Route path="/gallery" element={<PublicHome />} />
         <Route path="/contact" element={<PublicHome />} />
+      
 
         <Route
           path="/login"
@@ -38,13 +45,16 @@ function AppRouter() {
         />
 
         <Route
-          path="/dashboard"
           element={
             <ProtectedRoute>
-              <Dashboard />
+              <DashboardLayout />
             </ProtectedRoute>
           }
-        />
+        >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="projects" element={<Projects />} />
+          <Route path="templates" element={<Templates />} />
+        </Route>
 
       </Routes>
 

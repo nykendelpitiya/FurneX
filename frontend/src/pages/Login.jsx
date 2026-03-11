@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import { FcGoogle } from "react-icons/fc";
 import { motion } from "framer-motion";
 import loginImage from "../assets/login_signup.png";
 import { loginSchema } from "../utils/validators";
@@ -229,6 +228,8 @@ export default function Login() {
               <GoogleAuthButton
                 onSuccessLogin={handleGoogleSuccess}
                 onErrorMessage={setServerError}
+                buttonText="Continue with Google"
+                className="mx-auto flex h-[42px] sm:h-[46px] w-full max-w-[250px] items-center justify-center rounded-full border border-[#d7d7d7] bg-white text-[13px] sm:text-[15px] font-medium text-black shadow-sm transition hover:bg-[#f8f8f8]"
               />
             </MotionDiv>
 
