@@ -1,15 +1,14 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 
 import PublicHome from "../pages/PublicHome";
 import Login from "../pages/Login";
 import Signup from "../pages/Signup";
+import ForgotPassword from "../pages/ForgotPassword";
+import ResetPassword from "../pages/ResetPassword";
 import Dashboard from "../pages/Dashboard";
 import Projects from "../pages/Projects";
 import Templates from "../pages/Templates";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
-
 
 import ProtectedRoute from "../components/ProtectedRoute";
 import PublicRoute from "../components/PublicRoute";
@@ -24,7 +23,6 @@ function AppRouter() {
         <Route path="/features" element={<PublicHome />} />
         <Route path="/gallery" element={<PublicHome />} />
         <Route path="/contact" element={<PublicHome />} />
-      
 
         <Route
           path="/login"
@@ -40,6 +38,24 @@ function AppRouter() {
           element={
             <PublicRoute>
               <Signup />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/forgot-password"
+          element={
+            <PublicRoute>
+              <ForgotPassword />
+            </PublicRoute>
+          }
+        />
+
+        <Route
+          path="/reset-password"
+          element={
+            <PublicRoute>
+              <ResetPassword />
             </PublicRoute>
           }
         />

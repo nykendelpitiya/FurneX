@@ -94,20 +94,6 @@ function DashboardNavbar() {
                 </span>
               )}
             </NavLink>
-
-            <NavLink to="/help" className={navLinkClass}>
-              {({ isActive }) => (
-                <span className="relative">
-                  Help
-                  {isActive && (
-                    <Motion.span
-                      layoutId="dashboardNavUnderline"
-                      className="absolute -bottom-1 left-0 h-[2px] w-full rounded-full bg-[#1F5A2E]"
-                    />
-                  )}
-                </span>
-              )}
-            </NavLink>
           </div>
 
           <div className="hidden items-center gap-3 md:flex">
@@ -179,14 +165,6 @@ function DashboardNavbar() {
               className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
             >
               Templates
-            </NavLink>
-
-            <NavLink
-              to="/help"
-              onClick={() => setIsMenuOpen(false)}
-              className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
-            >
-              Help
             </NavLink>
 
             <div className="mt-2 flex items-center justify-between">

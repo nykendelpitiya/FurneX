@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { motion } from "framer-motion";
 import loginImage from "../assets/login_signup.png";
+import logo from "../assets/logo.png";
 import { loginSchema } from "../utils/validators";
 import { loginUser } from "../services/authService";
 import AuthContext from "../context/auth/AuthContext";
@@ -24,7 +25,6 @@ const itemVariants = {
 };
 
 const MotionDiv = motion.div;
-const MotionH1 = motion.h1;
 const MotionH2 = motion.h2;
 const MotionForm = motion.form;
 const MotionInput = motion.input;
@@ -80,7 +80,7 @@ export default function Login() {
       const token = response?.token ?? response?.data?.token;
       const user = response?.user ?? response?.data?.user;
 
-      login(user, token);
+      login(user, token, rememberMe);
       navigate("/dashboard");
     } catch (error) {
       setServerError(
@@ -92,7 +92,7 @@ export default function Login() {
   };
 
   const handleGoogleSuccess = (user, token) => {
-    login(user, token);
+    login(user, token, rememberMe);
     navigate("/dashboard");
   };
 
@@ -111,12 +111,15 @@ export default function Login() {
           initial="hidden"
           animate="show"
         >
-          <MotionH1
-            variants={itemVariants}
-            className="text-[30px] sm:text-[42px] lg:text-[48px] font-semibold text-black leading-none text-center mb-4 sm:mb-6 font-serif"
-          >
-            FurneX
-          </MotionH1>
+          <MotionDiv variants={itemVariants} className="mb-4 text-center sm:mb-6">
+            <Link to="/#home" aria-label="FurneX home" className="inline-flex items-center justify-center">
+              <img
+                src={logo}
+                alt="FurneX logo"
+                className="h-12 w-auto object-contain sm:h-14 md:h-16"
+              />
+            </Link>
+          </MotionDiv>
 
           <MotionH2
             variants={itemVariants}
@@ -133,7 +136,7 @@ export default function Login() {
             {/* Email */}
             <MotionDiv variants={itemVariants}>
               <label className="block text-[15px] sm:text-[18px] font-semibold text-black mb-2.5 sm:mb-3">
-                Email*
+                Email
               </label>
               <MotionInput
                 whileFocus={{ scale: 1.01 }}
@@ -150,7 +153,7 @@ export default function Login() {
             {/* Password */}
             <MotionDiv variants={itemVariants}>
               <label className="block text-[15px] sm:text-[18px] font-semibold text-black mb-2.5 sm:mb-3">
-                Password*
+                Password
               </label>
               <div className="relative">
                 <MotionInput
@@ -191,6 +194,7 @@ export default function Login() {
 
               <button
                 type="button"
+                onClick={() => navigate("/forgot-password")}
                 className="self-start sm:self-auto text-[13px] sm:text-[15px] font-medium text-[#355f2e] underline underline-offset-4 hover:text-[#1f5b2c]"
               >
                 Forgot Password
@@ -210,7 +214,7 @@ export default function Login() {
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={loading}
-                className="mx-auto flex h-[46px] sm:h-[52px] w-full max-w-full min-[420px]:max-w-[220px] items-center justify-center rounded-full bg-[#1f5b2c] text-white text-[16px] sm:text-[18px] font-bold tracking-wide transition hover:opacity-95 disabled:opacity-70"
+                className="mx-auto flex h-[40px] sm:h-[46px] w-full max-w-full min-[420px]:max-w-[200px] items-center justify-center rounded-full bg-[#1f5b2c] text-white text-[13px] sm:text-[16px] font-bold tracking-wide transition hover:opacity-95 disabled:opacity-70"
               >
                 {loading ? "Logging in..." : "LOG IN"}
               </MotionButton>

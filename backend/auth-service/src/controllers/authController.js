@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 const { OAuth2Client } = require("google-auth-library");
 
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -213,9 +214,111 @@ const getCurrentUser = async (req, res) => {
   }
 };
 
+// Request password reset
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required"
+      });
+    }
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user || user.provider !== "local") {
+      return res.status(200).json({
+        success: true,
+        message: "If that account exists, a reset link has been generated."
+      });
+    }
+
+    const rawResetToken = crypto.randomBytes(32).toString("hex");
+    const hashedResetToken = crypto
+      .createHash("sha256")
+      .update(rawResetToken)
+      .digest("hex");
+
+    user.passwordResetToken = hashedResetToken;
+    user.passwordResetExpires = new Date(Date.now() + 1000 * 60 * 15);
+    await user.save();
+
+    const frontendBaseUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+
+    return res.status(200).json({
+      success: true,
+      message: "Reset link generated successfully",
+      resetToken: rawResetToken,
+      resetLink: `${frontendBaseUrl}/reset-password?token=${rawResetToken}`
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
+// Reset password using token
+const resetPassword = async (req, res) => {
+  try {
+    const { token, password } = req.body;
+
+    if (!token || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Token and new password are required"
+      });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters"
+      });
+    }
+
+    const hashedResetToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    const user = await User.findOne({
+      passwordResetToken: hashedResetToken,
+      passwordResetExpires: { $gt: new Date() }
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset token is invalid or has expired"
+      });
+    }
+
+    user.password = await bcrypt.hash(password, 10);
+    user.passwordResetToken = null;
+    user.passwordResetExpires = null;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successful"
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   loginUser,
   googleAuth,
-  getCurrentUser
+  getCurrentUser,
+  forgotPassword,
+  resetPassword
 };
