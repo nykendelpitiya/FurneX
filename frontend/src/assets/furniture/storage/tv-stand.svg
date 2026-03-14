@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 120">
+
+<!-- frame -->
+<g id="frame" fill="#d9d9d9">
+
+<!-- outer frame -->
+<rect x="20" y="30" width="200" height="70" rx="6"/>
+
+</g>
+
+<!-- stand body (color change area) -->
+<g id="seat" fill="#4A90E2">
+
+<rect x="25" y="35" width="190" height="60" rx="4"/>
+
+</g>
+
+<!-- shelf dividers -->
+<g id="frame" stroke="#888" stroke-width="3">
+
+<line x1="90" y1="35" x2="90" y2="95"/>
+<line x1="150" y1="35" x2="150" y2="95"/>
+
+</g>
+
+<!-- handle -->
+<g id="frame" fill="#666">
+
+<circle cx="120" cy="65" r="3"/>
+
+</g>
+
+</svg>

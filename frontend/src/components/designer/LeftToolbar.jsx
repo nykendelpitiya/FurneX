@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 
 import { useRoomStore } from "../../store/useRoomStore";
+import { useFurnitureStore } from "../../store/useFurnitureStore";
 import SettingsPanel from "./SettingsPanel";
 import { useState } from "react";
 
@@ -20,6 +21,10 @@ function LeftToolbar() {
   const toggleGrid = useRoomStore((s) => s.toggleGrid);
   const setTool = useRoomStore((s) => s.setTool);
   const currentTool = useRoomStore((s) => s.currentTool);
+
+  const selectedId = useFurnitureStore((s) => s.selectedId);
+  const deleteFurniture = useFurnitureStore((s) => s.deleteFurniture);
+  const setSelected = useFurnitureStore((s) => s.setSelected);
 
   const zoomIn = useRoomStore((s) => s.zoomIn);
   const zoomOut = useRoomStore((s) => s.zoomOut);
@@ -59,6 +64,25 @@ function LeftToolbar() {
         {/* Structure */}
         <button className="tool-btn">
           <Layers size={20} />
+        </button>
+
+        {/* Delete */}
+        <button
+          className="tool-btn"
+          disabled={!selectedId}
+          onClick={() => {
+            if (!selectedId) return;
+            if (selectedId === "room") {
+              // delete room: reset to defaults
+              useRoomStore.getState().setRoom({ width: 0, height: 0, wallColor: "#000000", floorColor: "#ffffff", shape: "rectangle" });
+              setSelected(null);
+            } else {
+              deleteFurniture(selectedId);
+              setSelected(null);
+            }
+          }}
+        >
+          🗑
         </button>
 
         {/* Undo */}

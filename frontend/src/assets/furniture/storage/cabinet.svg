@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 140">
+
+<!-- frame -->
+<g id="frame" fill="#d9d9d9">
+
+<!-- cabinet outer frame -->
+<rect x="20" y="30" width="180" height="80" rx="6"/>
+
+</g>
+
+<!-- cabinet body (color change area) -->
+<g id="seat" fill="#4A90E2">
+
+<rect x="25" y="35" width="170" height="70" rx="4"/>
+
+</g>
+
+<!-- divider -->
+<g id="frame" stroke="#888" stroke-width="4">
+
+<line x1="110" y1="35" x2="110" y2="105"/>
+
+</g>
+
+<!-- handles -->
+<g id="frame" fill="#666">
+
+<circle cx="95" cy="70" r="3"/>
+<circle cx="125" cy="70" r="3"/>
+
+</g>
+
+</svg>
