@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+
+<!-- frame -->
+<g id="frame" fill="#cccccc">
+
+<!-- backrest -->
+<rect x="65" y="35" width="70" height="30" rx="10"/>
+
+<!-- chair body -->
+<rect x="60" y="65" width="80" height="90" rx="12"/>
+
+</g>
+
+<!-- seat -->
+<rect
+id="seat"
+x="75"
+y="85"
+width="50"
+height="55"
+rx="10"
+fill="#4A90E2"
+/>
+
+</svg>

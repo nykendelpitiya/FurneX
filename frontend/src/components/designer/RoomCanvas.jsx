@@ -1,262 +1,537 @@
-import { Stage, Layer, Rect, Line, Transformer, Group } from "react-konva";
+import { Stage, Layer, Rect, Transformer, Image, Group, Path, Text } from "react-konva";
 import { useRoomStore } from "../../store/useRoomStore";
+import { useFurnitureStore } from "../../store/useFurnitureStore";
 import Grid from "./Grid";
-import { useState, useRef, useEffect } from "react";
 
-function RoomCanvas() {
+import { useRef, useEffect, useState } from "react";
 
-  const room = useRoomStore((s) => s.room);
-  const showGrid = useRoomStore((s) => s.showGrid);
-  const walls = useRoomStore((s) => s.walls);
-  const addWall = useRoomStore((s) => s.addWall);
-  const currentTool = useRoomStore((s) => s.currentTool);
+function FurnitureItem({ item, onSelect, updateFurniture, onContext }) {
 
-  const snapToGrid = useRoomStore((s) => s.snapToGrid); // ⭐ ADD
-
-  const zoom = useRoomStore((s) => s.zoom);
-  const zoomIn = useRoomStore((s) => s.zoomIn);
-  const zoomOut = useRoomStore((s) => s.zoomOut);
-  const resetZoom = useRoomStore((s) => s.resetZoom);
-
-  const [drawing, setDrawing] = useState(false);
-  const [points, setPoints] = useState([]);
-
-  const [stagePos, setStagePos] = useState({
-    x: 0,
-    y: 0
-  });
-
+  const [image, setImage] = useState(null);
   const shapeRef = useRef();
-  const trRef = useRef();
 
   useEffect(() => {
 
-    if (trRef.current && shapeRef.current) {
+    let active = true;
+    let objectUrl = null;
 
-      trRef.current.nodes([shapeRef.current]);
-      trRef.current.getLayer().batchDraw();
+    const loadSvg = async () => {
 
+      const res = await fetch(item.src);
+      const svgText = await res.text();
+
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgText,"image/svg+xml");
+
+      const seat = doc.getElementById("seat");
+      const frame = doc.getElementById("frame");
+
+      if(seat){
+        seat.setAttribute("fill", item.seatColor || "#4A90E2");
+      }
+
+      if(frame){
+        frame.setAttribute("fill", item.frameColor || "#cccccc");
+      }
+
+      const finalSvg = new XMLSerializer().serializeToString(doc);
+
+      const blob = new Blob([finalSvg],{type:"image/svg+xml"});
+      objectUrl = URL.createObjectURL(blob);
+
+      const img = new window.Image();
+      img.onload = () => {
+        if(active) setImage(img)
+      };
+
+      img.src = objectUrl;
+
+    };
+
+    loadSvg();
+
+    return ()=>{
+      active=false
+      if(objectUrl) URL.revokeObjectURL(objectUrl)
     }
 
-  }, [room.shape]);
+  },[item.src,item.seatColor,item.frameColor]);
 
-  // ⭐ UPDATED SNAP FUNCTION
-  const snap = (value) => {
+  return(
 
-    if (!snapToGrid) return value;
+    <Image
+      id={item.id}
+      ref={shapeRef}
+      image={image}
 
-    const gridSize = 20;
+      x={item.x}
+      y={item.y}
 
-    return Math.round(value / gridSize) * gridSize;
+      width={item.width}
+      height={item.height}
 
+      rotation={item.rotation || 0}
+
+      draggable
+
+      onClick={(e)=>{
+        e.cancelBubble=true
+        onSelect(item.id)
+      }}
+
+      onContextMenu={(e) => {
+        // Konva wraps native event under e.evt
+        try { e.evt.preventDefault(); } catch { /* ignore */ }
+        e.cancelBubble = true;
+        if (onContext) onContext(e, item.id);
+      }}
+
+      onDragEnd={(e)=>{
+
+        updateFurniture(item.id,{
+          x:e.target.x(),
+          y:e.target.y()
+        })
+
+      }}
+
+      onTransformEnd={()=>{
+
+        const node = shapeRef.current
+
+        const scaleX = node.scaleX()
+        const scaleY = node.scaleY()
+
+        node.scaleX(1)
+        node.scaleY(1)
+
+        updateFurniture(item.id,{
+          x:node.x(),
+          y:node.y(),
+          width:Math.max(40,node.width()*scaleX),
+          height:Math.max(40,node.height()*scaleY),
+          rotation:node.rotation()
+        })
+
+      }}
+
+    />
+
+  )
+
+}
+
+function RoomCanvas(){
+
+  const room = useRoomStore((s)=>s.room)
+  const showGrid = useRoomStore((s)=>s.showGrid)
+
+  const furniture = useFurnitureStore((s)=>s.furniture)
+  const updateFurniture = useFurnitureStore((s)=>s.updateFurniture)
+  const addFurniture = useFurnitureStore((s)=>s.addFurniture)
+
+  const setSelected = useFurnitureStore((s)=>s.setSelected)
+  const selectedId = useFurnitureStore((s)=>s.selectedId)
+
+  const zoom = useRoomStore((s)=>s.zoom)
+  const zoomIn = useRoomStore((s)=>s.zoomIn)
+  const zoomOut = useRoomStore((s)=>s.zoomOut)
+  const resetZoom = useRoomStore((s)=>s.resetZoom)
+
+  const trRef = useRef()
+  const roomRef = useRef()
+  const stageRef = useRef()
+  const [menu, setMenu] = useState({ visible: false, x: 0, y: 0, id: null })
+
+  // Stage dimensions (match Stage props below)
+  const STAGE_WIDTH = 900
+  const STAGE_HEIGHT = 600
+  // Determine effective room dimensions depending on shape
+  const roomWidth = room.width;
+  const roomHeight = room.shape === "square" ? room.width : room.height;
+
+  // Calculate fit scale so the room always fits inside the stage
+  const fitScale = Math.min(
+    1,
+    Math.min(STAGE_WIDTH / Math.max(1, roomWidth), STAGE_HEIGHT / Math.max(1, roomHeight))
+  );
+
+  // final scale applies fitScale as baseline and preserves user zoom controls
+  const finalScale = fitScale * zoom;
+
+  // center the room inside the stage in stage (unscaled) coordinates
+  const roomX = (STAGE_WIDTH / finalScale - roomWidth) / 2;
+  const roomY = (STAGE_HEIGHT / finalScale - roomHeight) / 2;
+
+  useEffect(()=>{
+
+    if(!trRef.current) return
+
+    const stage = trRef.current.getStage()
+
+    const selectedNode =
+      selectedId === "room"
+      ? roomRef.current
+      : stage.findOne(`#${selectedId}`)
+
+    if(selectedNode){
+      trRef.current.nodes([selectedNode])
+    }else{
+      trRef.current.nodes([])
+    }
+
+    trRef.current.getLayer().batchDraw()
+
+  },[selectedId])
+
+  const selectedFurniture = furniture.find(f => f.id === selectedId)
+  const deleteFurniture = useFurnitureStore((s) => s.deleteFurniture)
+  const setRoom = useRoomStore((s) => s.setRoom)
+
+  const handleContext = (e, id) => {
+    // e is Konva event
+    try { e.evt.preventDefault(); } catch { /* ignore */ }
+    const clientX = (e.evt && e.evt.clientX) || 0;
+    const clientY = (e.evt && e.evt.clientY) || 0;
+    setSelected(id);
+    setMenu({ visible: true, x: clientX, y: clientY, id });
   };
 
-  return (
+  useEffect(() => {
+    const handleWindowClick = () => setMenu({ visible: false, x: 0, y: 0, id: null });
+    window.addEventListener("click", handleWindowClick);
+    return () => window.removeEventListener("click", handleWindowClick);
+  }, []);
+
+  useEffect(() => {
+    // attach native listeners to the Stage container so drag events aren't blocked by Konva internals
+    const attachListeners = () => {
+      const stage = stageRef.current;
+      if (!stage) return;
+      const container = stage.container();
+
+      const onDragOver = (e) => e.preventDefault();
+
+      const onDrop = (e) => {
+        e.preventDefault();
+        const dt = e.dataTransfer || (e.nativeEvent && e.nativeEvent.dataTransfer);
+        let dataStr = null;
+        try {
+          dataStr = dt.getData("furniture") || dt.getData("application/json") || dt.getData("text/plain");
+        } catch {
+          return;
+        }
+        if (!dataStr) return;
+        let data = null;
+        try { data = JSON.parse(dataStr); } catch { return; }
+
+        const rect = container.getBoundingClientRect();
+        // Use finalScale (fitScale * zoom) to convert screen coords to stage coords
+        const dropX = (e.clientX - rect.left) / finalScale;
+        const dropY = (e.clientY - rect.top) / finalScale;
+
+        addFurniture(data.type, data.src, {
+          x: dropX,
+          y: dropY,
+          width: 80,
+          height: 80,
+          seatColor: "#4A90E2",
+          frameColor: "#cccccc"
+        });
+      };
+
+      container.addEventListener("dragover", onDragOver);
+      container.addEventListener("drop", onDrop);
+
+      return () => {
+        container.removeEventListener("dragover", onDragOver);
+        container.removeEventListener("drop", onDrop);
+      };
+    };
+
+    const cleanup = attachListeners();
+    return () => { if (cleanup && typeof cleanup === 'function') cleanup(); };
+  }, [zoom, addFurniture, finalScale]);
+
+  return(
 
     <div className="absolute inset-0 flex justify-center items-center">
 
       <Stage
-        width={900}
-        height={600}
+        ref={stageRef}
+        width={STAGE_WIDTH}
+        height={STAGE_HEIGHT}
+        scaleX={finalScale}
+        scaleY={finalScale}
+        style={{background:"#fafafa"}}
 
-        scaleX={zoom}
-        scaleY={zoom}
-
-        x={stagePos.x}
-        y={stagePos.y}
-
-        draggable={currentTool === "move" && !drawing}
-
-        onMouseDown={(e) => {
-
-          if (currentTool !== "wall") return;
-
-          const pos = e.target.getStage().getPointerPosition();
-          if (!pos) return;
-
-          const x = snap(pos.x);
-          const y = snap(pos.y);
-
-          setDrawing(true);
-          setPoints([x, y, x, y]);
-
-        }}
-
-        onMouseMove={(e) => {
-
-          if (!drawing) return;
-
-          const pos = e.target.getStage().getPointerPosition();
-          if (!pos) return;
-
-          const x = snap(pos.x);
-          const y = snap(pos.y);
-
-          setPoints((prev) => [
-
-            prev[0],
-            prev[1],
-            x,
-            y
-
-          ]);
-
-        }}
-
-        onMouseUp={() => {
-
-          if (!drawing) return;
-
-          if (points.length === 4) {
-
-            addWall(points);
-
+        onMouseDown={(e)=>{
+          if(e.target === e.target.getStage()){
+            setSelected(null)
           }
-
-          setDrawing(false);
-          setPoints([]);
-
         }}
-
-        onDragEnd={(e) => {
-
-          setStagePos({
-
-            x: e.target.x(),
-            y: e.target.y()
-
-          });
-
-        }}
-
-        style={{ background: "#fafafa" }}
       >
 
         <Layer>
 
-          {showGrid && <Grid />}
+          {showGrid && (
+            <Grid
+              stageWidth={STAGE_WIDTH}
+              stageHeight={STAGE_HEIGHT}
+              cellSize={50}
+              centerX={roomX + roomWidth / 2}
+              centerY={roomY + roomHeight / 2}
+            />
+          )}
 
-          {/* Walls */}
-          {walls.map((wall, i) => (
+          {/* ROOM */}
 
-            <Line
-              key={i}
-              points={wall}
-              stroke={room.wallColor || "black"}
-              strokeWidth={4}
+          <Group
+            ref={roomRef}
+            x={roomX}
+            y={roomY}
+            draggable
+            id="room"
+            onClick={(e)=>{
+              e.cancelBubble=true
+              setSelected("room")
+            }}
+          >
+
+            {/* RECTANGLE */}
+
+
+            {room.shape === "rectangle" && (
+
+              <Rect
+                width={roomWidth}
+                height={roomHeight}
+                fill={room.floorColor}
+                stroke="black"
+              />
+
+            )}
+
+            {/* SQUARE */}
+
+            {room.shape === "square" && (
+
+              <Rect
+                width={roomWidth}
+                height={roomHeight}
+                fill={room.floorColor}
+                stroke="black"
+              />
+
+            )}
+
+            {/* L SHAPE */}
+
+            {room.shape === "lshape" && (
+
+              <Path
+                data={`
+                M0 0
+                h ${room.width}
+                v ${room.height/2}
+                h -${room.width/2}
+                v ${room.height/2}
+                h -${room.width/2}
+                z
+                `}
+                fill={room.floorColor}
+                stroke="black"
+              />
+
+            )}
+
+          </Group>
+
+          {/* FURNITURE */}
+
+          {furniture.map((item)=>(
+
+            <FurnitureItem
+              key={item.id}
+              item={item}
+              onSelect={setSelected}
+              onContext={handleContext}
+              updateFurniture={updateFurniture}
             />
 
           ))}
 
-          {/* Drawing preview */}
-          {drawing && points.length === 4 && (
+          {/* TRANSFORMER */}
 
-            <Line
-              points={points}
-              stroke={room.wallColor || "black"}
-              strokeWidth={4}
-              dash={[6, 4]}
-            />
-
-          )}
-
-          {/* RECTANGLE */}
-          {room.shape === "rectangle" && (
-
-            <Rect
-              ref={shapeRef}
-              x={200}
-              y={150}
-              width={room.width}
-              height={room.height}
-              fill={room.floorColor || "#e5e5e5"}
-              stroke="black"
-              draggable
-            />
-
-          )}
-
-          {/* SQUARE */}
-          {room.shape === "square" && (
-
-            <Rect
-              ref={shapeRef}
-              x={200}
-              y={150}
-              width={room.width}
-              height={room.width}
-              fill={room.floorColor || "#e5e5e5"}
-              stroke="black"
-              draggable
-            />
-
-          )}
-
-          {/* L SHAPE */}
-          {room.shape === "lshape" && (
-
-            <Group
-              ref={shapeRef}
-              draggable
-            >
-
-              <Rect
-                x={200}
-                y={150}
-                width={room.width}
-                height={room.height / 2}
-                fill={room.floorColor || "#e5e5e5"}
-                stroke="black"
-              />
-
-              <Rect
-                x={200}
-                y={150 + room.height / 2}
-                width={room.width / 2}
-                height={room.height / 2}
-                fill={room.floorColor || "#e5e5e5"}
-                stroke="black"
-              />
-
-            </Group>
-
-          )}
-
-          {/* Transformer */}
-          {(room.shape === "rectangle" || room.shape === "square") && (
-
-            <Transformer
-              ref={trRef}
-              rotateEnabled={false}
-            />
-
-          )}
+          <Transformer
+            ref={trRef}
+            rotateEnabled
+            enabledAnchors={[
+              "top-left",
+              "top-center",
+              "top-right",
+              "middle-left",
+              "middle-right",
+              "bottom-left",
+              "bottom-center",
+              "bottom-right"
+            ]}
+          />
 
         </Layer>
 
       </Stage>
 
-      {/* Zoom Controls */}
+      {/* UNIVERSAL COLOR PANEL */}
+
+      {selectedFurniture && (
+
+        <div
+          style={{
+            position:"absolute",
+            bottom:"20px",
+            left:"50%",
+            transform:"translateX(-50%)",
+            background:"white",
+            padding:"10px 20px",
+            borderRadius:"10px",
+            boxShadow:"0 2px 10px rgba(0,0,0,0.15)",
+            display:"flex",
+            gap:"25px"
+          }}
+        >
+
+          <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+
+            <span style={{fontSize:"13px"}}>Primary</span>
+
+            <input
+              type="color"
+              value={selectedFurniture.seatColor || "#4A90E2"}
+              onChange={(e)=>
+                updateFurniture(selectedFurniture.id,{
+                  seatColor:e.target.value
+                })
+              }
+            />
+
+          </div>
+
+          <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+
+            <span style={{fontSize:"13px"}}>Secondary</span>
+
+            <input
+              type="color"
+              value={selectedFurniture.frameColor || "#cccccc"}
+              onChange={(e)=>
+                updateFurniture(selectedFurniture.id,{
+                  frameColor:e.target.value
+                })
+              }
+            />
+
+          </div>
+
+        </div>
+
+      )}
+
+      {/* ZOOM */}
+
+      {/* DELETE BUTTON (Konva) - appears above selected object */}
+          {selectedId && (
+        (() => {
+          let objX = 0, objY = 0, objW = 0;
+
+          if (selectedId === "room") {
+            objX = roomX;
+            objY = roomY;
+            objW = roomWidth;
+          } else if (selectedFurniture) {
+            objX = selectedFurniture.x;
+            objY = selectedFurniture.y;
+            objW = selectedFurniture.width;
+          } else {
+            return null;
+          }
+
+          const btnW = 80;
+          const btnH = 30;
+          const offset = 10; // gap between object and button
+
+          const btnX = objX + objW / 2 - btnW / 2;
+          const btnY = objY - btnH - offset;
+
+          const handleDelete = () => {
+            if (selectedId === "room") {
+              // reset room to empty/small defaults
+              setRoom({ width: 0, height: 0, wallColor: "#000000", floorColor: "#ffffff", shape: "rectangle" });
+              // clear selection
+              setSelected(null);
+            } else {
+              deleteFurniture(selectedId);
+              setSelected(null);
+            }
+          };
+
+          return (
+            <Group x={btnX} y={btnY} onClick={handleDelete} draggable={false}>
+              <Rect width={btnW} height={btnH} fill="#e55353" cornerRadius={6} shadowBlur={4} />
+              <Text text={"🗑 Delete"} fill="#fff" fontSize={13} width={btnW} height={btnH} align="center" verticalAlign="middle" />
+            </Group>
+          );
+
+        })()
+      )}
+
       <div className="absolute bottom-32 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow flex gap-4">
 
         <button onClick={zoomOut}>-</button>
 
-        <span>
-          {Math.round(zoom * 100)}%
-        </span>
+        <span>{Math.round(zoom*100)}%</span>
 
         <button onClick={zoomIn}>+</button>
 
-        <button onClick={resetZoom}>
-          Reset
-        </button>
+        <button onClick={resetZoom}>Reset</button>
 
       </div>
 
+      {/* HTML context menu for furniture (absolute, not Konva) */}
+      {menu.visible && (
+        <div
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            left: menu.x,
+            top: menu.y,
+            background: "white",
+            border: "1px solid #ccc",
+            padding: "6px",
+            borderRadius: "6px",
+            cursor: "pointer",
+            zIndex: 9999
+          }}
+        >
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              if (menu.id) {
+                deleteFurniture(menu.id);
+                setSelected(null);
+              }
+              setMenu({ visible: false, x: 0, y: 0, id: null });
+            }}
+          >
+            Delete
+          </div>
+        </div>
+      )}
+
     </div>
 
-  );
+  )
 
 }
 
-export default RoomCanvas;
+export default RoomCanvas
