@@ -52,7 +52,7 @@ const FurnitureCard = ({ name, type, icon, addFurniture }) => (
         // Intentionally ignore drag data errors
       }
     }}
-    onClick={() => addFurniture(type, icon)}
+    onClick={() => { try { useRoomStore.getState().pushSnapshot(); } catch { /* intentionally ignored */ } addFurniture(type, icon); }}
     className="cursor-pointer border rounded-lg p-3 hover:bg-gray-50 hover:scale-105 transition flex flex-col items-center text-center"
   >
     <img src={icon} alt={name} className="w-12 h-12 mb-1"/>
@@ -99,27 +99,20 @@ function RightPanel() {
     <div className="fixed right-6 top-24 w-72 bg-white rounded-2xl shadow-xl p-4 z-40 max-h-[75vh] overflow-y-auto">
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-4">
+      <div className="flex w-full gap-2 mb-4">
 
         <button
-          className={`px-3 py-1 rounded-lg text-sm ${tab==="room" ? "bg-black text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded-xl text-sm font-medium flex-1 ${tab==="room" ? "bg-black text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => {setTab("room"); setCategory(null);}}
         >
           Room
         </button>
 
         <button
-          className={`px-3 py-1 rounded-lg text-sm ${tab==="furniture" ? "bg-black text-white" : "bg-gray-200"}`}
+          className={`px-4 py-2 rounded-xl text-sm font-medium flex-1 ${tab==="furniture" ? "bg-black text-white" : "bg-gray-200 text-gray-700"}`}
           onClick={() => {setTab("furniture"); setCategory(null);}}
         >
           Furniture
-        </button>
-
-        <button
-          className={`px-3 py-1 rounded-lg text-sm ${tab==="3d" ? "bg-black text-white" : "bg-gray-200"}`}
-          onClick={() => setTab("3d")}
-        >
-          3D
         </button>
 
       </div>
@@ -245,6 +238,33 @@ function RightPanel() {
           </button>
         </div>
       )}
+
+      {/* Bottom controls: 2D/3D toggle and Save Project button */}
+      <div className="mt-4 border-t pt-4 flex flex-col gap-3">
+
+        <div className="w-full flex rounded-full bg-gray-100 p-1">
+          <button
+            onClick={() => setTab("room")}
+            className={`flex-1 text-center py-1 rounded-full ${tab === "3d" ? "text-gray-600" : "bg-green-500 text-white"}`}
+          >
+            2D
+          </button>
+          <button
+            onClick={() => setTab("3d")}
+            className={`flex-1 text-center py-1 rounded-full ${tab === "3d" ? "bg-green-500 text-white" : "text-gray-600"}`}
+          >
+            3D
+          </button>
+        </div>
+
+        <button
+          onClick={() => { console.log('Save Project'); }}
+          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 transition py-2"
+        >
+          Save Project
+        </button>
+
+      </div>
 
     </div>
   );
