@@ -53,10 +53,10 @@ function LeftToolbar() {
           <Square size={20} />
         </button>
 
-        {/* Wall Tool */}
+        {/* Pen Tool */}
         <button
-          className={`tool-btn ${currentTool === "wall" ? "bg-gray-200" : ""}`}
-          onClick={() => setTool("wall")}
+          className={`tool-btn ${currentTool === "pen" ? "bg-gray-200" : ""}`}
+          onClick={() => setTool("pen")}
         >
           <Pencil size={20} />
         </button>
@@ -74,9 +74,11 @@ function LeftToolbar() {
             if (!selectedId) return;
             if (selectedId === "room") {
               // delete room: reset to defaults
+              useRoomStore.getState().pushSnapshot();
               useRoomStore.getState().setRoom({ width: 0, height: 0, wallColor: "#000000", floorColor: "#ffffff", shape: "rectangle" });
               setSelected(null);
             } else {
+              useRoomStore.getState().pushSnapshot();
               deleteFurniture(selectedId);
               setSelected(null);
             }

@@ -1,4 +1,4 @@
-import { Stage, Layer, Rect, Transformer, Image, Group, Path, Text } from "react-konva";
+import { Stage, Layer, Rect, Transformer, Image, Group, Path, Text, Line } from "react-konva";
 import { useRoomStore } from "../../store/useRoomStore";
 import { useFurnitureStore } from "../../store/useFurnitureStore";
 import Grid from "./Grid";
@@ -87,12 +87,13 @@ function FurnitureItem({ item, onSelect, updateFurniture, onContext }) {
       }}
 
       onDragEnd={(e)=>{
+        // snapshot before moving furniture
+        useRoomStore.getState().pushSnapshot();
 
         updateFurniture(item.id,{
           x:e.target.x(),
           y:e.target.y()
         })
-
       }}
 
       onTransformEnd={()=>{
@@ -104,6 +105,9 @@ function FurnitureItem({ item, onSelect, updateFurniture, onContext }) {
 
         node.scaleX(1)
         node.scaleY(1)
+
+        // snapshot before resizing/rotating
+        useRoomStore.getState().pushSnapshot();
 
         updateFurniture(item.id,{
           x:node.x(),
@@ -142,6 +146,11 @@ function RoomCanvas(){
   const roomRef = useRef()
   const stageRef = useRef()
   const [menu, setMenu] = useState({ visible: false, x: 0, y: 0, id: null })
+  const [designName, setDesignName] = useState("");
+  const currentTool = useRoomStore((s) => s.currentTool);
+  const roomPoints = useRoomStore((s) => s.roomPoints);
+  const setRoomPoints = useRoomStore((s) => s.setRoomPoints);
+  const setRoomShape = useRoomStore((s) => s.setRoomShape);
 
   // Stage dimensions (match Stage props below)
   const STAGE_WIDTH = 900
@@ -230,6 +239,9 @@ function RoomCanvas(){
         const dropX = (e.clientX - rect.left) / finalScale;
         const dropY = (e.clientY - rect.top) / finalScale;
 
+        // snapshot before adding furniture
+        useRoomStore.getState().pushSnapshot();
+
         addFurniture(data.type, data.src, {
           x: dropX,
           y: dropY,
@@ -253,9 +265,53 @@ function RoomCanvas(){
     return () => { if (cleanup && typeof cleanup === 'function') cleanup(); };
   }, [zoom, addFurniture, finalScale]);
 
+  // add pointer handling for pen tool
+  const handleStageMouseDown = (e) => {
+    if (currentTool !== "pen") {
+      // existing behavior: clear selection when clicking empty stage
+      if (e.target === e.target.getStage()) {
+        setSelected(null);
+      }
+      return;
+    }
+
+    // Pen tool: add point
+    const stage = stageRef.current;
+    if (!stage) return;
+    const pointer = stage.getPointerPosition();
+    if (!pointer) return;
+    const x = pointer.x / finalScale - roomX;
+    const y = pointer.y / finalScale - roomY;
+    // push new point
+    const next = [...(roomPoints || []), x, y];
+    setRoomPoints(next);
+  };
+
+  const handleStageDblClick = () => {
+    if (currentTool !== "pen") return;
+    // finalize polygon if at least 3 points
+    if (!roomPoints || roomPoints.length < 6) return;
+    // set room shape to polygon
+    setRoomShape("polygon");
+    // switch back to move tool
+    useRoomStore.getState().setTool("move");
+  };
+
   return(
 
-    <div className="absolute inset-0 flex justify-center items-center">
+    <div className={`absolute inset-0 flex justify-center items-center`} style={{ cursor: currentTool === "pen" ? "crosshair" : undefined }}>
+
+      {/* Design toolbar above canvas */}
+      <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 mb-4">
+        <span className="text-sm font-semibold text-gray-600">DESIGN</span>
+        <input
+          type="text"
+          value={designName}
+          onChange={(e) => setDesignName(e.target.value)}
+          placeholder="Enter design name..."
+          className="border rounded-full px-4 py-1 w-64 outline-none focus:ring-2 focus:ring-green-400"
+        />
+      </div>
 
       <Stage
         ref={stageRef}
@@ -264,12 +320,8 @@ function RoomCanvas(){
         scaleX={finalScale}
         scaleY={finalScale}
         style={{background:"#fafafa"}}
-
-        onMouseDown={(e)=>{
-          if(e.target === e.target.getStage()){
-            setSelected(null)
-          }
-        }}
+        onMouseDown={handleStageMouseDown}
+        onDblClick={handleStageDblClick}
       >
 
         <Layer>
@@ -343,6 +395,16 @@ function RoomCanvas(){
                 stroke="black"
               />
 
+            )}
+
+            {/* Polygon (pen tool) */}
+            {room.shape === "polygon" && roomPoints && roomPoints.length >= 6 && (
+              <Line points={roomPoints} closed fill={room.floorColor} stroke="black" />
+            )}
+
+            {/* Temporary pen line while drawing */}
+            {currentTool === "pen" && roomPoints && roomPoints.length >= 2 && (
+              <Line points={roomPoints} stroke="#4A5568" strokeWidth={2} dash={[4,4]} />
             )}
 
           </Group>
@@ -465,11 +527,15 @@ function RoomCanvas(){
 
           const handleDelete = () => {
             if (selectedId === "room") {
+              // snapshot before resetting room
+              useRoomStore.getState().pushSnapshot();
               // reset room to empty/small defaults
               setRoom({ width: 0, height: 0, wallColor: "#000000", floorColor: "#ffffff", shape: "rectangle" });
               // clear selection
               setSelected(null);
             } else {
+              // snapshot before deleting furniture
+              useRoomStore.getState().pushSnapshot();
               deleteFurniture(selectedId);
               setSelected(null);
             }
@@ -516,11 +582,13 @@ function RoomCanvas(){
           <div
             onClick={(e) => {
               e.stopPropagation();
-              if (menu.id) {
-                deleteFurniture(menu.id);
-                setSelected(null);
-              }
-              setMenu({ visible: false, x: 0, y: 0, id: null });
+                if (menu.id) {
+                  // snapshot before deleting furniture
+                  useRoomStore.getState().pushSnapshot();
+                  deleteFurniture(menu.id);
+                  setSelected(null);
+                }
+                setMenu({ visible: false, x: 0, y: 0, id: null });
             }}
           >
             Delete
