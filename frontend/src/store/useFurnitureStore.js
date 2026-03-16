@@ -12,7 +12,8 @@ export const useFurnitureStore = create((set) => ({
      ADD FURNITURE
   ========================= */
 
-  addFurniture: (type, src, opts = {}) =>
+  // now takes (model, src, opts)
+  addFurniture: (model, src, opts = {}) =>
     set((state) => ({
 
       furniture: [
@@ -20,7 +21,8 @@ export const useFurnitureStore = create((set) => ({
         {
           id: uuid(),
 
-          type,
+          // store exact model filename (e.g. "dining chair.glb")
+          model,
           src,
 
           x: typeof opts.x === "number" ? opts.x : 300,
