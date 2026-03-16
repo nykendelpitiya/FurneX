@@ -2,6 +2,7 @@ import { Stage, Layer, Rect, Transformer, Image, Group, Path, Text, Line } from 
 import { useRoomStore } from "../../store/useRoomStore";
 import { useFurnitureStore } from "../../store/useFurnitureStore";
 import Grid from "./Grid";
+import Viewer3D from "./Viewer3D";
 
 import { useRef, useEffect, useState } from "react";
 
@@ -147,6 +148,8 @@ function RoomCanvas(){
   const stageRef = useRef()
   const [menu, setMenu] = useState({ visible: false, x: 0, y: 0, id: null })
   const [designName, setDesignName] = useState("");
+  const viewMode = useRoomStore((s) => s.viewMode);
+  const setViewMode = useRoomStore((s) => s.setViewMode);
   const currentTool = useRoomStore((s) => s.currentTool);
   const roomPoints = useRoomStore((s) => s.roomPoints);
   const setRoomPoints = useRoomStore((s) => s.setRoomPoints);
@@ -242,7 +245,8 @@ function RoomCanvas(){
         // snapshot before adding furniture
         useRoomStore.getState().pushSnapshot();
 
-        addFurniture(data.type, data.src, {
+        // Add furniture with exact model filename (data.model)
+        addFurniture(data.model, data.src, {
           x: dropX,
           y: dropY,
           width: 80,
@@ -297,92 +301,98 @@ function RoomCanvas(){
     useRoomStore.getState().setTool("move");
   };
 
-  return(
+  return (
 
-    <div className={`absolute inset-0 flex justify-center items-center`} style={{ cursor: currentTool === "pen" ? "crosshair" : undefined }}>
+    <>
 
-      {/* Design toolbar above canvas */}
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 mb-4">
-        <span className="text-sm font-semibold text-gray-600">DESIGN</span>
-        <input
-          type="text"
-          value={designName}
-          onChange={(e) => setDesignName(e.target.value)}
-          placeholder="Enter design name..."
-          className="border rounded-full px-4 py-1 w-64 outline-none focus:ring-2 focus:ring-green-400"
-        />
-      </div>
+      {/* view mode is controlled by RightPanel; no top toggles */}
 
-      <Stage
-        ref={stageRef}
-        width={STAGE_WIDTH}
-        height={STAGE_HEIGHT}
-        scaleX={finalScale}
-        scaleY={finalScale}
-        style={{background:"#fafafa"}}
-        onMouseDown={handleStageMouseDown}
-        onDblClick={handleStageDblClick}
-      >
+      {viewMode === "2D" && (
 
-        <Layer>
+        <div className={`absolute inset-0 flex justify-center items-center`} style={{ cursor: currentTool === "pen" ? "crosshair" : undefined }}>
 
-          {showGrid && (
-            <Grid
-              stageWidth={STAGE_WIDTH}
-              stageHeight={STAGE_HEIGHT}
-              cellSize={50}
-              centerX={roomX + roomWidth / 2}
-              centerY={roomY + roomHeight / 2}
+          {/* Design toolbar above canvas */}
+          <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 mb-4">
+            <span className="text-sm font-semibold text-gray-600">DESIGN</span>
+            <input
+              type="text"
+              value={designName}
+              onChange={(e) => setDesignName(e.target.value)}
+              placeholder="Enter design name..."
+              className="border rounded-full px-4 py-1 w-64 outline-none focus:ring-2 focus:ring-green-400"
             />
-          )}
+          </div>
 
-          {/* ROOM */}
-
-          <Group
-            ref={roomRef}
-            x={roomX}
-            y={roomY}
-            draggable
-            id="room"
-            onClick={(e)=>{
-              e.cancelBubble=true
-              setSelected("room")
-            }}
+          <Stage
+            ref={stageRef}
+            width={STAGE_WIDTH}
+            height={STAGE_HEIGHT}
+            scaleX={finalScale}
+            scaleY={finalScale}
+            style={{background:"#fafafa"}}
+            onMouseDown={handleStageMouseDown}
+            onDblClick={handleStageDblClick}
           >
 
-            {/* RECTANGLE */}
+            <Layer>
+
+              {showGrid && (
+                <Grid
+                  stageWidth={STAGE_WIDTH}
+                  stageHeight={STAGE_HEIGHT}
+                  cellSize={50}
+                  centerX={roomX + roomWidth / 2}
+                  centerY={roomY + roomHeight / 2}
+                />
+              )}
+
+              {/* ROOM */}
+
+              <Group
+                ref={roomRef}
+                x={roomX}
+                y={roomY}
+                draggable
+                id="room"
+                onClick={(e)=>{
+                  e.cancelBubble=true
+                  setSelected("room")
+                }}
+              >
+
+                {/* RECTANGLE */}
 
 
-            {room.shape === "rectangle" && (
+                {room.shape === "rectangle" && (
 
-              <Rect
-                width={roomWidth}
-                height={roomHeight}
-                fill={room.floorColor}
-                stroke="black"
-              />
+                  <Rect
+                    width={roomWidth}
+                    height={roomHeight}
+                    fill={room.floorColor}
+                    stroke="black"
+                  />
 
-            )}
+                )}
 
-            {/* SQUARE */}
+                {/* SQUARE */}
 
-            {room.shape === "square" && (
+                {room.shape === "square" && (
 
-              <Rect
-                width={roomWidth}
-                height={roomHeight}
-                fill={room.floorColor}
-                stroke="black"
-              />
+                  <Rect
+                    width={roomWidth}
+                    height={roomHeight}
+                    fill={room.floorColor}
+                    stroke="black"
+                  />
 
-            )}
+                )}
 
-            {/* L SHAPE */}
+                {/* L SHAPE */}
 
-            {room.shape === "lshape" && (
+                {room.shape === "lshape" && (
 
-              <Path
-                data={`
+                  <Path
+                    data={`
                 M0 0
                 h ${room.width}
                 v ${room.height/2}
@@ -391,212 +401,258 @@ function RoomCanvas(){
                 h -${room.width/2}
                 z
                 `}
-                fill={room.floorColor}
-                stroke="black"
+                    fill={room.floorColor}
+                    stroke="black"
+                  />
+
+                )}
+
+                {/* Polygon (pen tool) */}
+                {room.shape === "polygon" && roomPoints && roomPoints.length >= 6 && (
+                  <Line points={roomPoints} closed fill={room.floorColor} stroke="black" />
+                )}
+
+                {/* Temporary pen line while drawing */}
+                {currentTool === "pen" && roomPoints && roomPoints.length >= 2 && (
+                  <Line points={roomPoints} stroke="#4A5568" strokeWidth={2} dash={[4,4]} />
+                )}
+
+              </Group>
+
+              {/* FURNITURE */}
+
+              {furniture.map((item)=>(
+
+                <FurnitureItem
+                  key={item.id}
+                  item={item}
+                  onSelect={setSelected}
+                  onContext={handleContext}
+                  updateFurniture={updateFurniture}
+                />
+
+              ))}
+
+              {/* TRANSFORMER */}
+
+              <Transformer
+                ref={trRef}
+                rotateEnabled
+                enabledAnchors={[
+                  "top-left",
+                  "top-center",
+                  "top-right",
+                  "middle-left",
+                  "middle-right",
+                  "bottom-left",
+                  "bottom-center",
+                  "bottom-right"
+                ]}
               />
 
-            )}
+            </Layer>
 
-            {/* Polygon (pen tool) */}
-            {room.shape === "polygon" && roomPoints && roomPoints.length >= 6 && (
-              <Line points={roomPoints} closed fill={room.floorColor} stroke="black" />
-            )}
+          </Stage>
 
-            {/* Temporary pen line while drawing */}
-            {currentTool === "pen" && roomPoints && roomPoints.length >= 2 && (
-              <Line points={roomPoints} stroke="#4A5568" strokeWidth={2} dash={[4,4]} />
-            )}
+          {/* UNIVERSAL COLOR PANEL */}
 
-          </Group>
+          {selectedFurniture && (
 
-          {/* FURNITURE */}
+            <div
+              style={{
+                position:"absolute",
+                bottom:"20px",
+                left:"50%",
+                transform:"translateX(-50%)",
+                background:"white",
+                padding:"10px 20px",
+                borderRadius:"10px",
+                boxShadow:"0 2px 10px rgba(0,0,0,0.15)",
+                display:"flex",
+                gap:"25px"
+              }}
+            >
 
-          {furniture.map((item)=>(
+              <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
 
-            <FurnitureItem
-              key={item.id}
-              item={item}
-              onSelect={setSelected}
-              onContext={handleContext}
-              updateFurniture={updateFurniture}
-            />
+                <span style={{fontSize:"13px"}}>Primary</span>
 
-          ))}
+                <input
+                  type="color"
+                  value={selectedFurniture.seatColor || "#4A90E2"}
+                  onChange={(e)=>
+                    updateFurniture(selectedFurniture.id,{
+                      seatColor:e.target.value
+                    })
+                  }
+                />
 
-          {/* TRANSFORMER */}
+              </div>
 
-          <Transformer
-            ref={trRef}
-            rotateEnabled
-            enabledAnchors={[
-              "top-left",
-              "top-center",
-              "top-right",
-              "middle-left",
-              "middle-right",
-              "bottom-left",
-              "bottom-center",
-              "bottom-right"
-            ]}
-          />
+              <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
 
-        </Layer>
+                <span style={{fontSize:"13px"}}>Secondary</span>
 
-      </Stage>
+                <input
+                  type="color"
+                  value={selectedFurniture.frameColor || "#cccccc"}
+                  onChange={(e)=>
+                    updateFurniture(selectedFurniture.id,{
+                      frameColor:e.target.value
+                    })
+                  }
+                />
 
-      {/* UNIVERSAL COLOR PANEL */}
+              </div>
 
-      {selectedFurniture && (
+            </div>
 
-        <div
-          style={{
-            position:"absolute",
-            bottom:"20px",
-            left:"50%",
-            transform:"translateX(-50%)",
-            background:"white",
-            padding:"10px 20px",
-            borderRadius:"10px",
-            boxShadow:"0 2px 10px rgba(0,0,0,0.15)",
-            display:"flex",
-            gap:"25px"
-          }}
-        >
+          )}
 
-          <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+          {/* ZOOM */}
 
-            <span style={{fontSize:"13px"}}>Primary</span>
+          {/* DELETE BUTTON (Konva) - appears above selected object */}
+              {selectedId && (
+            (() => {
+              let objX = 0, objY = 0, objW = 0;
 
-            <input
-              type="color"
-              value={selectedFurniture.seatColor || "#4A90E2"}
-              onChange={(e)=>
-                updateFurniture(selectedFurniture.id,{
-                  seatColor:e.target.value
-                })
+              if (selectedId === "room") {
+                objX = roomX;
+                objY = roomY;
+                objW = roomWidth;
+              } else if (selectedFurniture) {
+                objX = selectedFurniture.x;
+                objY = selectedFurniture.y;
+                objW = selectedFurniture.width;
+              } else {
+                return null;
               }
-            />
 
-          </div>
+              const btnW = 80;
+              const btnH = 30;
+              const offset = 10; // gap between object and button
 
-          <div style={{display:"flex",alignItems:"center",gap:"8px"}}>
+              const btnX = objX + objW / 2 - btnW / 2;
+              const btnY = objY - btnH - offset;
 
-            <span style={{fontSize:"13px"}}>Secondary</span>
-
-            <input
-              type="color"
-              value={selectedFurniture.frameColor || "#cccccc"}
-              onChange={(e)=>
-                updateFurniture(selectedFurniture.id,{
-                  frameColor:e.target.value
-                })
-              }
-            />
-
-          </div>
-
-        </div>
-
-      )}
-
-      {/* ZOOM */}
-
-      {/* DELETE BUTTON (Konva) - appears above selected object */}
-          {selectedId && (
-        (() => {
-          let objX = 0, objY = 0, objW = 0;
-
-          if (selectedId === "room") {
-            objX = roomX;
-            objY = roomY;
-            objW = roomWidth;
-          } else if (selectedFurniture) {
-            objX = selectedFurniture.x;
-            objY = selectedFurniture.y;
-            objW = selectedFurniture.width;
-          } else {
-            return null;
-          }
-
-          const btnW = 80;
-          const btnH = 30;
-          const offset = 10; // gap between object and button
-
-          const btnX = objX + objW / 2 - btnW / 2;
-          const btnY = objY - btnH - offset;
-
-          const handleDelete = () => {
-            if (selectedId === "room") {
-              // snapshot before resetting room
-              useRoomStore.getState().pushSnapshot();
-              // reset room to empty/small defaults
-              setRoom({ width: 0, height: 0, wallColor: "#000000", floorColor: "#ffffff", shape: "rectangle" });
-              // clear selection
-              setSelected(null);
-            } else {
-              // snapshot before deleting furniture
-              useRoomStore.getState().pushSnapshot();
-              deleteFurniture(selectedId);
-              setSelected(null);
-            }
-          };
-
-          return (
-            <Group x={btnX} y={btnY} onClick={handleDelete} draggable={false}>
-              <Rect width={btnW} height={btnH} fill="#e55353" cornerRadius={6} shadowBlur={4} />
-              <Text text={"🗑 Delete"} fill="#fff" fontSize={13} width={btnW} height={btnH} align="center" verticalAlign="middle" />
-            </Group>
-          );
-
-        })()
-      )}
-
-      <div className="absolute bottom-32 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow flex gap-4">
-
-        <button onClick={zoomOut}>-</button>
-
-        <span>{Math.round(zoom*100)}%</span>
-
-        <button onClick={zoomIn}>+</button>
-
-        <button onClick={resetZoom}>Reset</button>
-
-      </div>
-
-      {/* HTML context menu for furniture (absolute, not Konva) */}
-      {menu.visible && (
-        <div
-          onClick={(e) => e.stopPropagation()}
-          style={{
-            position: "absolute",
-            left: menu.x,
-            top: menu.y,
-            background: "white",
-            border: "1px solid #ccc",
-            padding: "6px",
-            borderRadius: "6px",
-            cursor: "pointer",
-            zIndex: 9999
-          }}
-        >
-          <div
-            onClick={(e) => {
-              e.stopPropagation();
-                if (menu.id) {
+              const handleDelete = () => {
+                if (selectedId === "room") {
+                  // snapshot before resetting room
+                  useRoomStore.getState().pushSnapshot();
+                  // reset room to empty/small defaults
+                  setRoom({ width: 0, height: 0, wallColor: "#000000", floorColor: "#ffffff", shape: "rectangle" });
+                  // clear selection
+                  setSelected(null);
+                } else {
                   // snapshot before deleting furniture
                   useRoomStore.getState().pushSnapshot();
-                  deleteFurniture(menu.id);
+                  deleteFurniture(selectedId);
                   setSelected(null);
                 }
-                setMenu({ visible: false, x: 0, y: 0, id: null });
-            }}
-          >
-            Delete
+              };
+
+              return (
+                <Group x={btnX} y={btnY} onClick={handleDelete} draggable={false}>
+                  <Rect width={btnW} height={btnH} fill="#e55353" cornerRadius={6} shadowBlur={4} />
+                  <Text text={"🗑 Delete"} fill="#fff" fontSize={13} width={btnW} height={btnH} align="center" verticalAlign="middle" />
+                </Group>
+              );
+
+            })()
+          )}
+
+          <div className="absolute bottom-32 left-1/2 -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow flex gap-4">
+
+            <button onClick={zoomOut}>-</button>
+
+            <span>{Math.round(zoom*100)}%</span>
+
+            <button onClick={zoomIn}>+</button>
+
+            <button onClick={resetZoom}>Reset</button>
+
           </div>
+
+          {/* HTML context menu for furniture (absolute, not Konva) */}
+          {menu.visible && (
+            <div
+              onClick={(e) => e.stopPropagation()}
+              style={{
+                position: "absolute",
+                left: menu.x,
+                top: menu.y,
+                background: "white",
+                border: "1px solid #ccc",
+                padding: "6px",
+                borderRadius: "6px",
+                cursor: "pointer",
+                zIndex: 9999
+              }}
+            >
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                    if (menu.id) {
+                      // snapshot before deleting furniture
+                      useRoomStore.getState().pushSnapshot();
+                      deleteFurniture(menu.id);
+                      setSelected(null);
+                    }
+                    setMenu({ visible: false, x: 0, y: 0, id: null });
+                }}
+              >
+                Delete
+              </div>
+            </div>
+          )}
+
+        </div>
+
+      )}
+
+      {viewMode === "3D" && (
+        <div className="absolute inset-0">
+
+          {/* convert room/furniture into Viewer3D-friendly props */}
+          {(() => {
+            const PPM = 80;
+            const viewerRoom = {
+              width: room.width / PPM,
+              length: roomHeight / PPM,
+              height: 3,
+              wall_color: room.wallColor,
+              floor_color: room.floorColor
+            };
+            viewerRoom.shape = room.shape;
+
+            const viewerFurniture = furniture.map((it) => {
+              const adjX = (typeof it.x === 'number' ? it.x - roomX : 0);
+              const adjY = (typeof it.y === 'number' ? it.y - roomY : 0);
+              return {
+                ...it,
+                x: adjX,
+                y: adjY,
+                // model: exact filename stored on the furniture item
+                model: it.model || null,
+                color: it.seatColor || it.frameColor || "#8B5A2B"
+              };
+            });
+
+            return (
+              <Viewer3D
+                room={viewerRoom}
+                furniture={viewerFurniture}
+                selectedId={selectedId}
+                onSelectItem={(id) => setSelected(id)}
+                onUpdateItem={(id, updates) => updateFurniture(id, updates)}
+              />
+            );
+          })()}
+
         </div>
       )}
 
-    </div>
+    </>
 
   )
 

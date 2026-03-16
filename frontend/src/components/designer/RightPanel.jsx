@@ -38,21 +38,21 @@ import displayShelf from "../../assets/furniture/storage/display-shelf.svg";
 import sideCabinet from "../../assets/furniture/storage/side-cabinet.svg";
 import tvStand from "../../assets/furniture/storage/tv-stand.svg";
 
-const FurnitureCard = ({ name, type, icon, addFurniture }) => (
+const FurnitureCard = ({ name, type, model, icon, addFurniture }) => (
   <div
     draggable
     onDragStart={(e) => {
       try {
         e.dataTransfer.setData(
           "furniture",
-          JSON.stringify({ type, name, src: icon })
+          JSON.stringify({ type, name, src: icon, model })
         );
         e.dataTransfer.effectAllowed = "copy";
       } catch {
         // Intentionally ignore drag data errors
       }
     }}
-    onClick={() => { try { useRoomStore.getState().pushSnapshot(); } catch { /* intentionally ignored */ } addFurniture(type, icon); }}
+    onClick={() => { try { useRoomStore.getState().pushSnapshot(); } catch { /* intentionally ignored */ } addFurniture(model, icon); }}
     className="cursor-pointer border rounded-lg p-3 hover:bg-gray-50 hover:scale-105 transition flex flex-col items-center text-center"
   >
     <img src={icon} alt={name} className="w-12 h-12 mb-1"/>
@@ -173,52 +173,52 @@ function RightPanel() {
 
               {category === "chairs" && (
                 <div className="grid grid-cols-3 gap-3">
-                  <FurnitureCard name="Accent Chair" type="chair" icon={accentChair} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Armchair" type="chair" icon={armChair} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Dining Chair" type="chair" icon={diningChair} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Lounge Chair" type="chair" icon={loungeChair} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Office Chair" type="chair" icon={officeChair} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Accent Chair" type="chair" model="accent chair.glb" icon={accentChair} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Armchair" type="chair" model="arm chair.glb" icon={armChair} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Dining Chair" type="chair" model="dining chair.glb" icon={diningChair} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Lounge Chair" type="chair" model="lounge chair.glb" icon={loungeChair} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Office Chair" type="chair" model="office chair.glb" icon={officeChair} addFurniture={addFurniture}/>
                 </div>
               )}
 
               {category === "tables" && (
                 <div className="grid grid-cols-3 gap-3">
-                  <FurnitureCard name="Coffee Table" type="table" icon={coffeeTable} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Console Table" type="table" icon={consoleTable} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Desk" type="table" icon={desk} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Dining Table" type="table" icon={diningTable} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Side Table" type="table" icon={sideTable} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Round Table" type="table" icon={roundTable} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Coffee Table" type="table" model="coffee table.glb" icon={coffeeTable} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Console Table" type="table" model="console table.glb" icon={consoleTable} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Desk" type="table" model="desk.glb" icon={desk} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Dining Table" type="table" model="dining table.glb" icon={diningTable} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Side Table" type="table" model="side table.glb" icon={sideTable} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Round Table" type="table" model="round chair.glb" icon={roundTable} addFurniture={addFurniture}/>
                 </div>
               )}
 
               {category === "sofas" && (
                 <div className="grid grid-cols-3 gap-3">
-                  <FurnitureCard name="Single Sofa" type="sofa" icon={singleSofa} addFurniture={addFurniture}/>
-                  <FurnitureCard name="2 Seater Sofa" type="sofa" icon={twoSofa} addFurniture={addFurniture}/>
-                  <FurnitureCard name="3 Seater Sofa" type="sofa" icon={threeSofa} addFurniture={addFurniture}/>
-                  <FurnitureCard name="L Shape Sofa" type="sofa" icon={lShapeSofa} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Recliner Sofa" type="sofa" icon={reclinerSofa} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Single Sofa" type="sofa" model="single sofa.glb" icon={singleSofa} addFurniture={addFurniture}/>
+                  <FurnitureCard name="2 Seater Sofa" type="sofa" model="2 seater sofa.glb" icon={twoSofa} addFurniture={addFurniture}/>
+                  <FurnitureCard name="3 Seater Sofa" type="sofa" model="3 seater sofa.glb" icon={threeSofa} addFurniture={addFurniture}/>
+                  <FurnitureCard name="L Shape Sofa" type="sofa" model="l shape sofa.glb" icon={lShapeSofa} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Recliner Sofa" type="sofa" model="recliner sofa.glb" icon={reclinerSofa} addFurniture={addFurniture}/>
                 </div>
               )}
 
               {category === "beds" && (
                 <div className="grid grid-cols-3 gap-3">
-                  <FurnitureCard name="Single Bed" type="bed" icon={singleBed} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Double Bed" type="bed" icon={doubleBed} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Queen Bed" type="bed" icon={queenBed} addFurniture={addFurniture}/>
-                  <FurnitureCard name="King Bed" type="bed" icon={kingBed} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Bunk Bed" type="bed" icon={bunkBed} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Single Bed" type="bed" model="single bed.glb" icon={singleBed} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Double Bed" type="bed" model="double bed.glb" icon={doubleBed} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Queen Bed" type="bed" model="queen bed.glb" icon={queenBed} addFurniture={addFurniture}/>
+                  <FurnitureCard name="King Bed" type="bed" model="king bed.glb" icon={kingBed} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Bunk Bed" type="bed" model="bunk bed.glb" icon={bunkBed} addFurniture={addFurniture}/>
                 </div>
               )}
 
               {category === "storage" && (
                 <div className="grid grid-cols-3 gap-3">
-                  <FurnitureCard name="Bookshelf" type="storage" icon={bookshelf} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Cabinet" type="storage" icon={cabinet} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Display Shelf" type="storage" icon={displayShelf} addFurniture={addFurniture}/>
-                  <FurnitureCard name="Side Cabinet" type="storage" icon={sideCabinet} addFurniture={addFurniture}/>
-                  <FurnitureCard name="TV Stand" type="storage" icon={tvStand} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Bookshelf" type="storage" model="bookshelf.glb" icon={bookshelf} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Cabinet" type="storage" model="cabinet.glb" icon={cabinet} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Display Shelf" type="storage" model="display shelf.glb" icon={displayShelf} addFurniture={addFurniture}/>
+                  <FurnitureCard name="Side Cabinet" type="storage" model="side cabinet.glb" icon={sideCabinet} addFurniture={addFurniture}/>
+                  <FurnitureCard name="TV Stand" type="storage" model="tv stand.glb" icon={tvStand} addFurniture={addFurniture}/>
                 </div>
               )}
 
@@ -233,7 +233,10 @@ function RightPanel() {
       {/* 3D TAB */}
       {tab === "3d" && (
         <div className="text-center">
-          <button className="bg-black text-white px-4 py-2 rounded-lg w-full">
+          <button
+            onClick={() => { try { useRoomStore.getState().setViewMode("3D"); } catch {} }}
+            className="bg-black text-white px-4 py-2 rounded-lg w-full"
+          >
             View Room in 3D
           </button>
         </div>
@@ -244,13 +247,13 @@ function RightPanel() {
 
         <div className="w-full flex rounded-full bg-gray-100 p-1">
           <button
-            onClick={() => setTab("room")}
+            onClick={() => { setTab("room"); try { useRoomStore.getState().setViewMode("2D"); } catch {} }}
             className={`flex-1 text-center py-1 rounded-full ${tab === "3d" ? "text-gray-600" : "bg-green-500 text-white"}`}
           >
             2D
           </button>
           <button
-            onClick={() => setTab("3d")}
+            onClick={() => { setTab("3d"); try { useRoomStore.getState().setViewMode("3D"); } catch {} }}
             className={`flex-1 text-center py-1 rounded-full ${tab === "3d" ? "bg-green-500 text-white" : "text-gray-600"}`}
           >
             3D

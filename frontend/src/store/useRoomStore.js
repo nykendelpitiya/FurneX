@@ -94,6 +94,10 @@ export const useRoomStore = create((set, get) => ({
   // Reset Zoom
   resetZoom: () => set({ zoom: 1 }),
 
+  // View mode for canvas: "2D" or "3D"
+  viewMode: "2D",
+  setViewMode: (mode) => set({ viewMode: mode }),
+
   // Undo: restore last snapshot
   undo: () =>
     set((state) => {
