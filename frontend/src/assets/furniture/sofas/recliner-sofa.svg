@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220">
+
+<!-- frame -->
+<g id="frame" fill="#cccccc">
+
+<!-- sofa back -->
+<rect x="50" y="40" width="140" height="35" rx="12"/>
+
+<!-- left arm -->
+<rect x="30" y="70" width="25" height="95" rx="12"/>
+
+<!-- right arm -->
+<rect x="190" y="70" width="25" height="95" rx="12"/>
+
+<!-- sofa body -->
+<rect x="55" y="70" width="135" height="95" rx="15"/>
+
+<!-- recliner footrests -->
+<rect x="65" y="150" width="50" height="40" rx="10"/>
+
+<rect x="125" y="150" width="50" height="40" rx="10"/>
+
+</g>
+
+<!-- seat cushions -->
+<g id="seat" fill="#4A90E2">
+
+<rect x="65" y="95" width="50" height="55" rx="10"/>
+
+<rect x="125" y="95" width="50" height="55" rx="10"/>
+
+</g>
+
+</svg>

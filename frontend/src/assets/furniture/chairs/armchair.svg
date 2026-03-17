@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+
+<!-- frame -->
+<g id="frame" fill="#cccccc" stroke="#999" stroke-width="3">
+
+  <!-- left arm -->
+  <rect x="40" y="80" width="30" height="80" rx="10" />
+
+  <!-- right arm -->
+  <rect x="130" y="80" width="30" height="80" rx="10" />
+
+  <!-- backrest -->
+  <rect x="70" y="45" width="60" height="40" rx="10" />
+
+  <!-- bottom frame -->
+  <rect x="65" y="90" width="70" height="70" rx="12" fill="none"/>
+
+</g>
+
+<!-- seat -->
+<rect
+id="seat"
+x="75"
+y="95"
+width="50"
+height="55"
+rx="10"
+fill="#4A90E2"
+/>
+
+</svg>

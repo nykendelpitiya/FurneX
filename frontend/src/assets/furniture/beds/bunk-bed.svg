@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 260">
+
+<!-- frame -->
+<g id="frame" fill="#d9d9d9">
+
+<!-- bed frame -->
+<rect x="20" y="20" width="140" height="220" rx="12"/>
+
+</g>
+
+<!-- mattresses -->
+<g id="seat" fill="#4A90E2">
+
+<!-- upper mattress -->
+<rect x="30" y="30" width="120" height="90" rx="10"/>
+
+<!-- lower mattress -->
+<rect x="30" y="140" width="120" height="90" rx="10"/>
+
+</g>
+
+<!-- pillows -->
+<g id="frame" fill="#ffffff">
+
+<rect x="35" y="35" width="50" height="25" rx="6"/>
+
+<rect x="35" y="145" width="50" height="25" rx="6"/>
+
+</g>
+
+<!-- divider -->
+<g id="frame" stroke="#888" stroke-width="3">
+
+<line x1="30" y1="130" x2="150" y2="130"/>
+
+</g>
+
+</svg>

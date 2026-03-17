@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+
+<!-- frame (back + arms) -->
+<g id="frame" fill="#cccccc">
+
+<!-- backrest -->
+<rect x="50" y="35" width="100" height="45" rx="20"/>
+
+<!-- arms -->
+<rect x="25" y="75" width="25" height="85" rx="12"/>
+<rect x="150" y="75" width="25" height="85" rx="12"/>
+
+<!-- outer body -->
+<rect x="40" y="70" width="120" height="95" rx="25"/>
+
+</g>
+
+<!-- seat cushion -->
+<rect
+id="seat"
+x="60"
+y="95"
+width="80"
+height="60"
+rx="18"
+fill="#4A90E2"
+/>
+
+</svg>
