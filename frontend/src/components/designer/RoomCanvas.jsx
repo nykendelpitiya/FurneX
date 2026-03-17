@@ -147,9 +147,9 @@ function RoomCanvas(){
   const roomRef = useRef()
   const stageRef = useRef()
   const [menu, setMenu] = useState({ visible: false, x: 0, y: 0, id: null })
-  const [designName, setDesignName] = useState("");
+  // ...removed unused designName and setDesignName...
   const viewMode = useRoomStore((s) => s.viewMode);
-  const setViewMode = useRoomStore((s) => s.setViewMode);
+  // ...removed unused setViewMode...
   const currentTool = useRoomStore((s) => s.currentTool);
   const roomPoints = useRoomStore((s) => s.roomPoints);
   const setRoomPoints = useRoomStore((s) => s.setRoomPoints);
@@ -311,17 +311,7 @@ function RoomCanvas(){
 
         <div className={`absolute inset-0 flex justify-center items-center`} style={{ cursor: currentTool === "pen" ? "crosshair" : undefined }}>
 
-          {/* Design toolbar above canvas */}
-          <div className="absolute top-6 left-1/2 -translate-x-1/2 z-30 flex items-center gap-3 mb-4">
-            <span className="text-sm font-semibold text-gray-600">DESIGN</span>
-            <input
-              type="text"
-              value={designName}
-              onChange={(e) => setDesignName(e.target.value)}
-              placeholder="Enter design name..."
-              className="border rounded-full px-4 py-1 w-64 outline-none focus:ring-2 focus:ring-green-400"
-            />
-          </div>
+        
 
           <Stage
             ref={stageRef}

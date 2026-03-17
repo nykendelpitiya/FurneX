@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion as Motion } from "framer-motion";
 import { ArrowRightCircle, MoreVertical, Ruler, Building2, Home } from "lucide-react";
-import card01 from "../../assets/card01.png";
-import card02 from "../../assets/card02.png";
-import card03 from "../../assets/card03.png";
+
 
 const cardHoverVariants = {
   rest: {
@@ -37,35 +35,8 @@ const contentHoverVariants = {
   },
 };
 
-const projects = [
-  {
-    id: 1,
-    image: card01,
-    updated: "Updated 3h ago",
-    title: "My apartmlan - v1",
-    size: "80 m²",
-    type: "Apartment",
-    rooms: "5 rooms",
-  },
-  {
-    id: 2,
-    image: card02,
-    updated: "Updated 2w ago",
-    title: "Modern House - v2",
-    size: "120 m²",
-    type: "House",
-    rooms: "5 rooms",
-  },
-  {
-    id: 3,
-    image: card03,
-    updated: "Updated 1d ago",
-    title: "Beach House - v1",
-    size: "168 m²",
-    type: "House",
-    rooms: "8 rooms",
-  },
-];
+
+// Fetch designs from backend and use as projects
 
 function ProjectCard({ project, index }) {
   return (
@@ -197,16 +168,32 @@ function ProjectCard({ project, index }) {
   );
 }
 
+
 function ProjectBoardSection() {
+  const [projects, setProjects] = useState([]);
   const [activeProjectIndex, setActiveProjectIndex] = useState(0);
 
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setActiveProjectIndex((prev) => (prev + 1) % projects.length);
-    }, 3200);
-
-    return () => clearInterval(intervalId);
+    fetch("http://localhost:5002/api/designs")
+      .then((res) => res.json())
+      .then((data) => {
+        setProjects(data);
+      })
+      .catch((err) => console.error("Failed to fetch designs:", err));
   }, []);
+
+  useEffect(() => {
+    if (projects.length <= 3) return;
+    const intervalId = setInterval(() => {
+      setActiveProjectIndex((prev) => {
+        if (prev + 3 >= projects.length) {
+          return 0;
+        }
+        return prev + 1;
+      });
+    }, 4000);
+    return () => clearInterval(intervalId);
+  }, [projects]);
 
   return (
     <section className="mx-auto max-w-7xl px-4 pb-10 sm:px-5 md:px-6 md:pb-14">
@@ -221,7 +208,6 @@ function ProjectBoardSection() {
           <h2 className="text-2xl font-semibold text-black sm:text-3xl md:text-4xl">
             Project board
           </h2>
-
           <button
             type="button"
             className="hidden text-[#4B5375] transition hover:scale-105 hover:text-[#1F5A2E] md:inline-flex"
@@ -232,22 +218,40 @@ function ProjectBoardSection() {
         </div>
 
         <div className="hidden gap-4 sm:gap-5 md:grid md:grid-cols-2 xl:grid-cols-3">
-          {projects.map((project, index) => (
-            <ProjectCard key={project.id} project={project} index={index} />
+          {projects.slice(activeProjectIndex, activeProjectIndex + 3).map((project, index) => (
+            <ProjectCard key={project._id} project={{
+              id: project._id,
+              image: project.previewImage || '',
+              updated: project.updatedAt ? `Updated ${new Date(project.updatedAt).toLocaleDateString()}` : '',
+              title: project.designName,
+              size: project.room ? `${project.room.width} x ${project.room.height}` : '',
+              type: project.room?.shape || '',
+              rooms: project.furniture ? `${project.furniture.length} items` : '',
+            }} index={index} />
           ))}
         </div>
 
         <div className="md:hidden">
           <AnimatePresence mode="wait">
-            <Motion.div
-              key={projects[activeProjectIndex].id}
-              initial={{ opacity: 0, x: 44 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -44 }}
-              transition={{ duration: 0.45, ease: "easeOut" }}
-            >
-              <ProjectCard project={projects[activeProjectIndex]} index={0} />
-            </Motion.div>
+            {projects.length > 0 && (
+              <Motion.div
+                key={projects[activeProjectIndex]._id}
+                initial={{ opacity: 0, x: 44 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -44 }}
+                transition={{ duration: 0.45, ease: "easeOut" }}
+              >
+                <ProjectCard project={{
+                  id: projects[activeProjectIndex]._id,
+                  image: projects[activeProjectIndex].previewImage || '',
+                  updated: projects[activeProjectIndex].updatedAt ? `Updated ${new Date(projects[activeProjectIndex].updatedAt).toLocaleDateString()}` : '',
+                  title: projects[activeProjectIndex].designName,
+                  size: projects[activeProjectIndex].room ? `${projects[activeProjectIndex].room.width} x ${projects[activeProjectIndex].room.height}` : '',
+                  type: projects[activeProjectIndex].room?.shape || '',
+                  rooms: projects[activeProjectIndex].furniture ? `${projects[activeProjectIndex].furniture.length} items` : '',
+                }} index={0} />
+              </Motion.div>
+            )}
           </AnimatePresence>
         </div>
       </Motion.div>
