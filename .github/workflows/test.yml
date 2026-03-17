@@ -2,10 +2,9 @@ name: FurneX CI Pipeline
 
 on:
   push:
-    branches: [ main, dev  ]
-
+    branches: [ main, dev ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, dev ]
 
 jobs:
   test:
@@ -15,15 +14,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install dependencies
-        run: npm install
-        working-directory: frontend
+        run: |
+          cd frontend
+          npm install
 
       - name: Run tests
-        run: npm test
-        working-directory: frontend
+        run: |
+          cd frontend
+          npm test
