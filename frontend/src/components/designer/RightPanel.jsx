@@ -234,7 +234,7 @@ function RightPanel() {
       {tab === "3d" && (
         <div className="text-center">
           <button
-            onClick={() => { try { useRoomStore.getState().setViewMode("3D"); } catch {} }}
+            onClick={() => { try { useRoomStore.getState().setViewMode("3D"); } catch { /* intentionally ignored */ } }}
             className="bg-black text-white px-4 py-2 rounded-lg w-full"
           >
             View Room in 3D
@@ -247,25 +247,20 @@ function RightPanel() {
 
         <div className="w-full flex rounded-full bg-gray-100 p-1">
           <button
-            onClick={() => { setTab("room"); try { useRoomStore.getState().setViewMode("2D"); } catch {} }}
+            onClick={() => { setTab("room"); try { useRoomStore.getState().setViewMode("2D"); } catch { /* intentionally ignored */ } }}
             className={`flex-1 text-center py-1 rounded-full ${tab === "3d" ? "text-gray-600" : "bg-green-500 text-white"}`}
           >
             2D
           </button>
           <button
-            onClick={() => { setTab("3d"); try { useRoomStore.getState().setViewMode("3D"); } catch {} }}
+            onClick={() => { setTab("3d"); try { useRoomStore.getState().setViewMode("3D"); } catch { /* intentionally ignored */ } }}
             className={`flex-1 text-center py-1 rounded-full ${tab === "3d" ? "bg-green-500 text-white" : "text-gray-600"}`}
           >
             3D
           </button>
         </div>
 
-        <button
-          onClick={() => { console.log('Save Project'); }}
-          className="w-full bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:scale-105 transition py-2"
-        >
-          Save Project
-        </button>
+      
 
       </div>
 

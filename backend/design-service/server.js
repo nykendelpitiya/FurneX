@@ -7,6 +7,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const designRoutes = require("./routes/designRoutes");
+app.use("/api", designRoutes);
+
 app.get("/", (req, res) => {
   res.json({ message: "Design Service running" });
 });

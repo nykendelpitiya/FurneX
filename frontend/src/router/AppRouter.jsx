@@ -7,7 +7,7 @@ import ForgotPassword from "../pages/ForgotPassword";
 import ResetPassword from "../pages/ResetPassword";
 import Dashboard from "../pages/Dashboard";
 import Projects from "../pages/Projects";
-import Templates from "../pages/Templates";
+import Designs from "../pages/Designs";
 import DashboardLayout from "../components/dashboard/DashboardLayout";
 
 import ProtectedRoute from "../components/ProtectedRoute";
@@ -69,7 +69,7 @@ function AppRouter() {
         >
           <Route path="dashboard" element={<Dashboard />} />
           <Route path="projects" element={<Projects />} />
-          <Route path="templates" element={<Templates />} />
+          <Route path="designs" element={<Designs />} />
         </Route>
 
       </Routes>

@@ -16,6 +16,7 @@
     "@react-three/fiber": "^9.5.0",
     "axios": "^1.13.6",
     "framer-motion": "^12.35.2",
+    "html2canvas": "^1.4.1",
     "jwt-decode": "^4.0.0",
     "konva": "^10.2.1",
     "lucide-react": "^0.577.0",

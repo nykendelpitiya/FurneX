@@ -81,10 +81,10 @@ function DashboardNavbar() {
               )}
             </NavLink>
 
-            <NavLink to="/templates" className={navLinkClass}>
+            <NavLink to="/designs" className={navLinkClass}>
               {({ isActive }) => (
                 <span className="relative">
-                  Templates
+                  Designs
                   {isActive && (
                     <Motion.span
                       layoutId="dashboardNavUnderline"
@@ -160,11 +160,11 @@ function DashboardNavbar() {
             </NavLink>
 
             <NavLink
-              to="/templates"
+              to="/designs"
               onClick={() => setIsMenuOpen(false)}
               className="rounded-xl px-4 py-3 text-sm font-medium text-gray-700 transition hover:bg-green-50 hover:text-[#1F5A2E]"
             >
-              Templates
+              Designs
             </NavLink>
 
             <div className="mt-2 flex items-center justify-between">

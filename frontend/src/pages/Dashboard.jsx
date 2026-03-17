@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion as Motion } from "framer-motion";
 import { FaFacebook, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/fa";
@@ -11,7 +11,7 @@ function StatCircle({ value = 70 }) {
 
   return (
     <div
-      className="relative h-8 w-8 rounded-full"
+      className="relative w-8 h-8 rounded-full"
       style={{
         background: `conic-gradient(#000 0deg ${angle}deg, #e5e7eb ${angle}deg 360deg)`,
       }}
@@ -37,6 +37,7 @@ function StatCard({ title, subtitle, value, total, progress }) {
   );
 }
 
+
 function Dashboard() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
@@ -47,6 +48,24 @@ function Dashboard() {
   const [showFaqs, setShowFaqs] = useState(false);
   const [showGuides, setShowGuides] = useState(false);
   const [showContact, setShowContact] = useState(false);
+
+  // Dynamic stats state
+  const [activeProjects, setActiveProjects] = useState(0);
+  const [totalProjects, setTotalProjects] = useState(0);
+  const [workspaceUsed, setWorkspaceUsed] = useState(0);
+  const [workspaceTotal, setWorkspaceTotal] = useState(0);
+
+  // Simulate fetching real stats (replace with real API calls as needed)
+  useEffect(() => {
+    // Example: fetch from /api/stats or similar endpoint
+    // For now, simulate with static values
+    setTimeout(() => {
+      setActiveProjects(12); // e.g., fetched from backend
+      setTotalProjects(40);
+      setWorkspaceUsed(9.2); // in GB
+      setWorkspaceTotal(15); // in GB
+    }, 400);
+  }, []);
 
   const getGreetingClassName = () => {
     if (greeting.length > 28) {
@@ -62,7 +81,7 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen bg-[#F6F6F4]">
-      <section className="mx-auto -mt-3 max-w-7xl px-6 pb-12 pt-0 md:pb-16 md:pt-2">
+      <section className="px-6 pt-0 pb-12 mx-auto -mt-3 max-w-7xl md:pb-16 md:pt-2">
         <div className="grid items-center gap-10 md:grid-cols-2">
           {/* LEFT SIDE */}
           <Motion.div
@@ -76,7 +95,7 @@ function Dashboard() {
               {greeting}
             </h1>
 
-            <p className="mt-4 max-w-md text-lg leading-snug text-gray-700 md:text-2xl">
+            <p className="max-w-md mt-4 text-lg leading-snug text-gray-700 md:text-2xl">
               Pick up where you left off or start a brand new design
             </p>
 
@@ -84,7 +103,7 @@ function Dashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.1 }}
-              className="relative mt-6 flex justify-center md:hidden"
+              className="relative flex justify-center mt-6 md:hidden"
             >
               <Motion.div
                 className="absolute inset-x-6 top-8 -z-10 h-[72%] rounded-full bg-[radial-gradient(circle_at_center,_rgba(31,90,46,0.16),_rgba(31,90,46,0.03)_45%,_transparent_72%)] blur-2xl"
@@ -135,21 +154,21 @@ function Dashboard() {
             </button>
             <br/><br/>
 
-            <div className="mt-8 grid gap-3 sm:mt-10 sm:gap-4 md:mt-16 md:flex md:flex-wrap md:gap-7">
+            <div className="grid gap-3 mt-8 sm:mt-10 sm:gap-4 md:mt-16 md:flex md:flex-wrap md:gap-7">
               <StatCard
                 title="Active projects"
                 subtitle="In progress this month"
-                value="10"
-                total="40 slots"
-                progress={25}
+                value={activeProjects}
+                total={`${totalProjects} slots`}
+                progress={totalProjects > 0 ? Math.round((activeProjects / totalProjects) * 100) : 0}
               />
 
               <StatCard
                 title="Workspace Usage"
                 subtitle="Storage capacity"
-                value="8.5"
-                total="15 GB"
-                progress={57}
+                value={workspaceUsed}
+                total={`${workspaceTotal} GB`}
+                progress={workspaceTotal > 0 ? Math.round((workspaceUsed / workspaceTotal) * 100) : 0}
               />
             </div>
           </Motion.div>
@@ -159,7 +178,7 @@ function Dashboard() {
             initial={{ opacity: 0, x: 25 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.55 }}
-            className="relative hidden justify-center md:flex md:justify-end"
+            className="relative justify-center hidden md:flex md:justify-end"
           >
             <Motion.div
               className="absolute inset-x-10 top-10 -z-10 h-[78%] rounded-full bg-[radial-gradient(circle_at_center,_rgba(31,90,46,0.16),_rgba(31,90,46,0.03)_45%,_transparent_72%)] blur-2xl"
@@ -206,7 +225,7 @@ function Dashboard() {
       <ProjectBoardSection />
 
       {/* Need Help Section */}
-      <section id="dashboard-help-section" className="mx-auto max-w-7xl px-6 pb-16 pt-12">
+      <section id="dashboard-help-section" className="px-6 pt-12 pb-16 mx-auto max-w-7xl">
         <div className="mb-10 text-center">
           <h2 className="text-3xl font-bold text-black">Need Help?</h2>
           <p className="mt-2 text-gray-500">
@@ -216,10 +235,10 @@ function Dashboard() {
 
         <div className="grid gap-6 sm:grid-cols-3">
           {/* FAQs */}
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="p-6 bg-white shadow-sm rounded-2xl">
             <h3 className="text-base font-bold text-black">FAQs</h3>
             <p className="mt-2 text-sm text-gray-500">
-              Browse frequently asked questions about projects, templates and workspace usage.
+              Browse frequently asked questions about projects, designs and workspace usage.
             </p>
             <button
               type="button"
@@ -238,7 +257,7 @@ function Dashboard() {
           </div>
 
           {/* Documentation */}
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="p-6 bg-white shadow-sm rounded-2xl">
             <h3 className="text-base font-bold text-black">Documentation</h3>
             <p className="mt-2 text-sm text-gray-500">
               Learn how to create designs, manage projects and use all FurneX tools.
@@ -260,7 +279,7 @@ function Dashboard() {
           </div>
 
           {/* Contact Support */}
-          <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="p-6 bg-white shadow-sm rounded-2xl">
             <h3 className="text-base font-bold text-black">Contact Support</h3>
             <p className="mt-2 text-sm text-gray-500">
               Need assistance? Our support team is ready to help you anytime.
@@ -283,7 +302,7 @@ function Dashboard() {
                   </a>
                   <p className="text-sm font-semibold text-black">Design Technology Lab</p>
                 </div>
-                <div className="mt-4 flex gap-2">
+                <div className="flex gap-2 mt-4">
                   {[FaFacebook, FaTwitter, FaInstagram, FaLinkedinIn].map((Icon, i) => (
                     <button
                       key={i}
