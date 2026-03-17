@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 80">
+
+<!-- frame -->
+<g id="frame" fill="#c49a6c">
+
+<!-- table body -->
+<rect x="10" y="20" width="140" height="40" rx="6"/>
+
+</g>
+
+<!-- surface / color change area -->
+<g id="seat" fill="#4A90E2">
+
+<rect x="20" y="25" width="120" height="30" rx="4"/>
+
+</g>
+
+<!-- legs -->
+<g id="frame" fill="#8b8b8b">
+
+<rect x="12" y="22" width="6" height="6"/>
+<rect x="142" y="22" width="6" height="6"/>
+
+<rect x="12" y="52" width="6" height="6"/>
+<rect x="142" y="52" width="6" height="6"/>
+
+</g>
+
+</svg>

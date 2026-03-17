@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 220">
+
+<!-- frame -->
+<g id="frame" fill="#d9d9d9">
+
+<rect x="20" y="20" width="80" height="180" rx="10"/>
+
+</g>
+
+<!-- mattress -->
+<g id="seat" fill="#4A90E2">
+
+<rect x="28" y="28" width="64" height="164" rx="8"/>
+
+</g>
+
+<!-- pillow -->
+<g id="frame" fill="#ffffff">
+
+<rect x="32" y="32" width="56" height="26" rx="6"/>
+
+</g>
+
+</svg>

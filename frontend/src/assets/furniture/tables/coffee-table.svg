@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+
+<!-- frame -->
+<g id="frame" fill="#c49a6c">
+
+<!-- table top -->
+<rect x="20" y="30" width="80" height="50" rx="10"/>
+
+</g>
+
+<!-- color change area -->
+<g id="seat" fill="#4A90E2">
+
+<!-- center glass -->
+<rect x="35" y="40" width="50" height="30" rx="6"/>
+
+</g>
+
+<!-- legs -->
+<g id="frame" fill="#8b8b8b">
+
+<rect x="22" y="80" width="8" height="15"/>
+<rect x="90" y="80" width="8" height="15"/>
+
+<rect x="22" y="25" width="8" height="10"/>
+<rect x="90" y="25" width="8" height="10"/>
+
+</g>
+
+</svg>

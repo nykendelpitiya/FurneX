@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+
+<!-- frame -->
+<g id="frame" fill="#cccccc">
+
+<!-- backrest -->
+<rect x="70" y="25" width="60" height="35" rx="12"/>
+
+<!-- arms -->
+<rect x="40" y="80" width="20" height="40" rx="8"/>
+<rect x="140" y="80" width="20" height="40" rx="8"/>
+
+</g>
+
+<!-- seat -->
+<ellipse
+id="seat"
+cx="100"
+cy="100"
+rx="35"
+ry="32"
+fill="#4A90E2"
+/>
+
+<!-- center base -->
+<circle cx="100" cy="140" r="12" fill="#bbbbbb"/>
+
+<!-- 5 star legs -->
+<line x1="100" y1="140" x2="55" y2="170" stroke="#999999" stroke-width="5"/>
+<line x1="100" y1="140" x2="145" y2="170" stroke="#999999" stroke-width="5"/>
+<line x1="100" y1="140" x2="100" y2="185" stroke="#999999" stroke-width="5"/>
+<line x1="100" y1="140" x2="60" y2="145" stroke="#999999" stroke-width="5"/>
+<line x1="100" y1="140" x2="140" y2="145" stroke="#999999" stroke-width="5"/>
+
+</svg>
